@@ -30,6 +30,8 @@ UI_DIR      = build
 
 HEADERS += src/mainwindow.h \
     src/SpiceHighlighter.hpp \
+    src/calc/analyze_context.h \
+    src/calc/analyze_entry.h \
     src/calc/stamp.hpp \
     src/chart/mychart.h \
     src/circuit/circuit.hpp \
@@ -37,6 +39,7 @@ HEADERS += src/mainwindow.h \
     src/cmds/ac_dc.hpp \
     src/cmds/option.hpp \
     src/cmds/pulse.hpp \
+    src/devices/Nonlinear_device.hpp \
     src/devices/all_devices.hpp \
     src/devices/base_device.hpp \
     src/devices/source_device.hpp \

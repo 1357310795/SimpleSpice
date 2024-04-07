@@ -6,6 +6,7 @@
 #include "global.hpp"
 #include "myconsole.h"
 #include "circuit/circuit_node.h"
+#include "calc/analyze_context.h"
 
 class BaseDevice {
 private:
@@ -21,21 +22,11 @@ public:
         return "undefined";
     }
     
-    virtual void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    virtual void appendStampDC(AnalyzeContext* context) {
         throw std::runtime_error("Method Not Implemented");
     }
 
-    virtual void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    virtual void appendStampAC(AnalyzeContext* context) {
         throw std::runtime_error("Method Not Implemented");
     }
 

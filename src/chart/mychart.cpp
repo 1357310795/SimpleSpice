@@ -20,7 +20,7 @@ ChartViewWindow::~ChartViewWindow()
     delete ui;
 }
 
-void ChartViewWindow::initChart(std::vector<QAbstractSeries*> &seriesGroups)
+void ChartViewWindow::initChart(std::vector<QAbstractSeries*> &seriesGroups, bool useLogAxis)
 {
     // QSplineSeries* series = new QSplineSeries();   // 创建一个样条曲线对象
     // series->setName("曲线");
@@ -45,10 +45,43 @@ void ChartViewWindow::initChart(std::vector<QAbstractSeries*> &seriesGroups)
 
         QChart* chart = ui->chartView->chart();    // 获取一个chart用于管理不同类型的series和其他图表相关对象
         //chart->legend()->hide();                   // 隐藏图例
-        for (auto &series : seriesGroups)
-            chart->addSeries(series);                  // 添加创建好的曲线图对象
         chart->setTitle("曲线图图表标题");           // 设置标题
-        chart->createDefaultAxes();                // 基于已添加到图表中的series为图表创建轴。以前添加到图表中的任何轴都将被删除。
+
+        QAbstractAxis* axisX;
+        QAbstractAxis* axisY;
+
+        for (auto &series : seriesGroups)
+            chart->addSeries(series); 
+
+        if (!useLogAxis)
+        {
+            axisX = new QValueAxis();
+            chart->addAxis(axisX, Qt::AlignBottom);
+            axisY = new QValueAxis();
+            chart->addAxis(axisY, Qt::AlignLeft);
+        }
+        else
+        {
+            axisX = new QLogValueAxis();
+            //axisY.setLabelFormat('%g')
+            //axisY.setTitleText('值')
+            ((QLogValueAxis*)axisX)->setBase(10.0);
+            ((QLogValueAxis*)axisX)->setMinorTickCount(-1);
+            chart->addAxis(axisX, Qt::AlignBottom);
+
+            axisY = new QValueAxis();
+            chart->addAxis(axisY, Qt::AlignLeft);
+            //axisX.setLabelFormat('%i');
+            //axisX.setTitleText('数据点');
+            //axisX.setTickCount(len(lineSeries));
+            //lineSeries.attachAxis(axisX);
+        }
+
+        for (auto &series : seriesGroups)
+        {
+            series->attachAxis(axisX);
+            series->attachAxis(axisY);
+        }
         // chart->axes(Qt::Vertical).first()->setRange(0, 20);  // 设置Y轴的范围
 
         ui->chartView->setRenderHint(QPainter::Antialiasing);  // 设置抗锯齿

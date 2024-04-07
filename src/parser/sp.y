@@ -12,6 +12,8 @@
 #include "myconsole.h"
 #include "devices/all_devices.hpp"
 #include "cmds/plot.hpp"
+#include "cmds/pulse.hpp"
+#include "cmds/sinusoid.hpp"
 #include "circuit/circuit_node.h"
 
 void yyerror (char const *s) {
@@ -111,6 +113,15 @@ void ParseCCVS(char const *name, char const *node1, char const *node2, char cons
     addNode(node1); addNode(node2); addNode(nc1); addNode(nc2); 
     D_CCVS* d = new D_CCVS(name, node1, node2, nc1, nc2, value);
     circuit->devices.push_back(d);
+}
+
+void ParseDiode(char const *name, char const *node1, char const *node2)
+{
+    if (!checkName(name)) return;
+    addNode(node1); addNode(node2);
+    D_Diode* d = new D_Diode(name, node1, node2);
+    circuit->devices.push_back(d);
+    circuit->hasNonlinearDevice = true;
 }
 
 void parseOption(char const *op)
@@ -243,6 +254,7 @@ component:
     | vccs
     | cccs
     | ccvs
+    | diode
     ;
 
 command:
@@ -271,6 +283,11 @@ inductor:
     { ParseInductor($1, $2, $3, $4); }
     ;
 
+diode: 
+    P_DIODE node node
+    { ParseDiode($1, $2, $3); }
+    ;
+
 vsource:
     P_VSOURCE node node
     {
@@ -297,6 +314,12 @@ vsource:
         d_VSource->pulse = new Pulse($4, $5, $6, $7, $8, $9, $10);
         console->log(std::format("[SpParser] [Command] PULSE detected!"));
     }
+    |
+    vsource RK_SIN LBRACKET value value value value value RBRACKET
+    {
+        d_VSource->sin = new Sinusoid($4, $5, $6, $7, $8);
+        console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
+    }
     ;
 
 isource:
@@ -318,6 +341,18 @@ isource:
     isource RK_AC value
     {
         d_ISource->AC_Mag = $3;
+    }
+    |
+    isource RK_PULSE LBRACKET value value value value value value value RBRACKET
+    {
+        d_ISource->pulse = new Pulse($4, $5, $6, $7, $8, $9, $10);
+        console->log(std::format("[SpParser] [Command] PULSE detected!"));
+    }
+    |
+    isource RK_SIN LBRACKET value value value value value RBRACKET
+    {
+        d_ISource->sin = new Sinusoid($4, $5, $6, $7, $8);
+        console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
     }
     ;
 

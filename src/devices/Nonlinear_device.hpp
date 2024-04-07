@@ -8,10 +8,10 @@
 #include "circuit/circuit_node.h"
 #include "calc/analyze_context.h"
 
-class DynamicDevice: virtual public BaseDevice {
+class NonlinearDevice: virtual public BaseDevice {
 public:
 
-    DynamicDevice() {};
+    NonlinearDevice() {};
 
     virtual void appendStampTRAN(AnalyzeContext* context) {
         throw std::runtime_error("Method Not Implemented");
@@ -25,7 +25,7 @@ public:
         throw std::runtime_error("Method Not Implemented");
     } 
 
-    virtual double filterLTE(AnalyzeContext* context, double step) {
+    virtual bool checkConvergence(AnalyzeContext* context) {
         throw std::runtime_error("Method Not Implemented");
     } 
 };

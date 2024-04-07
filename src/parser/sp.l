@@ -4,6 +4,7 @@
 %{
 #include <string>
 #include <vector>
+#include <cctype>
 #include "parser.hpp"
 #include "global.hpp"
 #include "myconsole.h"
@@ -11,7 +12,7 @@
 double parseValue(const char *str);
 %}
 
-%s state_options state_pulse
+%s state_options state_sourcetype
 
 ALPHA       [_A-Za-z]
 DIGIT       [0-9]
@@ -36,7 +37,7 @@ P_MOSFET      [Mm]{ALPHANUM}+
 
 EOL         [\r\n]*
 BLANK       [ \t]+
-S_UNIT      [Ff]|[Pp]|[Nn]|[Uu]|[Mm]|[Kk]|[Mm]|[Xx]|[Gg]|[Tt]
+S_UNIT      [Ff]|[Pp]|[Nn]|[Uu]|[Mm]|[Kk]|[Mm]|[Xx]|[Gg]|[Tt]|[Mm][Ee][Gg]
 VALUE       ({REAL}|[\-]?{INTEGER}){S_UNIT}
 COMMENTLINE \*.*\n
 LBRACKET    \(
@@ -57,7 +58,6 @@ RK_POI         [Pp][Oo][Ii]
 RK_PU          [Pp][Uu]
 RK_PULSE       [Pp][Uu][Ll][Ss][Ee]
 RK_PWL         [Pp][Ww][Ll]
-RK_R           [Rr]
 RK_RD          [Rr][Dd]
 RK_SFFM        [Ss][Ff][Ff][Mm]
 RK_SIN         [Ss][Ii][Nn]
@@ -85,8 +85,8 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 {VALUE}     { yylval.value = parseValue(yytext); return REAL;   }
 
 <state_options>{STRING}  { yylval.str = strdup(yytext); return OPTIONS_ITEM;   }
-<state_pulse>{LBRACKET}     { return LBRACKET; }
-<state_pulse>{RBRACKET}     { return RBRACKET; }
+<state_sourcetype>{LBRACKET}     { return LBRACKET; }
+<state_sourcetype>{RBRACKET}     { return RBRACKET; }
 
 {P_RESISTOR}    { yylval.str = strdup(yytext);  return P_RESISTOR;   }
 {P_CAPACITOR}   { yylval.str = strdup(yytext);  return P_CAPACITOR;  }
@@ -98,7 +98,6 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 {P_CCVS}        { yylval.str = strdup(yytext);  return P_CCVS;       }
 {P_VCVS}        { yylval.str = strdup(yytext);  return P_VCVS;       }
 {P_OPAMP}       { yylval.str = strdup(yytext);  return P_OPAMP;      }
-{P_SWITCH}      { yylval.str = strdup(yytext);  return P_SWITCH;     }
 {P_DIODE}       { yylval.str = strdup(yytext);  return P_DIODE;      }
 {P_MOSFET}      { yylval.str = strdup(yytext);  return P_MOSFET;     }
 
@@ -119,12 +118,11 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 {RK_PL}{BLANK}      { return RK_PL   ; }
 {RK_POI}{BLANK}     { return RK_POI  ; }
 {RK_PU}{BLANK}      { return RK_PU   ; }
-{RK_PULSE}          { BEGIN(state_pulse); return RK_PULSE; }
+{RK_PULSE}          { BEGIN(state_sourcetype); return RK_PULSE; }
 {RK_PWL}{BLANK}     { return RK_PWL  ; }
-{RK_R}{BLANK}       { return RK_R    ; }
 {RK_RD}{BLANK}      { return RK_RD   ; }
 {RK_SFFM}{BLANK}    { return RK_SFFM ; }
-{RK_SIN}{BLANK}     { return RK_SIN  ; }
+{RK_SIN}            { BEGIN(state_sourcetype); return RK_SIN  ; }
 {RK_OP}{BLANK}      { return RK_OP   ; }
 {RK_TRAN}{BLANK}    { return RK_TRAN ; }
 
@@ -145,12 +143,19 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 .           { return *yytext; }
 %%
 
+/* {P_SWITCH}      { yylval.str = strdup(yytext);  return P_SWITCH;     } */
+
 int yywrap() { return 1; }
 
 double parseValue(const char *str)
 {
     double value = atof(str);
     int    len = strlen(str);
+
+    if (std::tolower(str[len - 1]) == 'g')
+        if (std::tolower(str[len - 2]) == 'e')
+            if (std::tolower(str[len - 3]) == 'm')
+                return value * 1e6;
 
     char u = str[len - 1];
     if (u == 'F' || u == 'f')

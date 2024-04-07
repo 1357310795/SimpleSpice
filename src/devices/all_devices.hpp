@@ -9,6 +9,8 @@
 #include "circuit/circuit_node.h"
 #include "devices/source_device.hpp"
 #include "devices/dynamic_device.hpp"
+#include "devices/Nonlinear_device.hpp"
+#include "calc/analyze_context.h"
 #include <Eigen/Dense>
 
 class D_Resistor : public BaseDevice {
@@ -50,22 +52,12 @@ public:
         mat(index2, index2) += 1/this->Value;
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes);
     }
 
     void checkNode(
@@ -104,21 +96,16 @@ public:
         return "Capacitor";
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    void appendStampDC(AnalyzeContext* context) {
         //do nothing
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    void appendStampAC(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount; 
+        Eigen::MatrixXcd* mat = &context->matc;  
+        Eigen::VectorXcd* rhs = &context->rhsc; 
+        std::vector<CircuitNode> &nodes = context->nodes; 
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -131,20 +118,20 @@ public:
         int index1 = std::distance(nodes.begin(), it1);
         int index2 = std::distance(nodes.begin(), it2);
 
-        mat(index1, index1) += std::complex<double>(0, 1) * std::complex<double>(this->Value, 0);
-        mat(index1, index2) += std::complex<double>(0, -1) * std::complex<double>(this->Value, 0);
-        mat(index2, index1) += std::complex<double>(0, -1) * std::complex<double>(this->Value, 0);
-        mat(index2, index2) += std::complex<double>(0, 1) * std::complex<double>(this->Value, 0);
+        (*mat)(index1, index1) += std::complex<double>((double)0, (double)2 * M_PI * context->freq) * std::complex<double>(this->Value, (double)0);
+        (*mat)(index1, index2) += std::complex<double>((double)0, (double)-2 * M_PI * context->freq) * std::complex<double>(this->Value, (double)0);
+        (*mat)(index2, index1) += std::complex<double>((double)0, (double)-2 * M_PI * context->freq) * std::complex<double>(this->Value, (double)0);
+        (*mat)(index2, index2) += std::complex<double>((double)0, (double)2 * M_PI * context->freq) * std::complex<double>(this->Value, (double)0);
     }
 
-    void appendStampTRAN(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes,
-        double interval,
-        double lastValue
-    ) {
+    void appendStampTRAN(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount; 
+        Eigen::MatrixXd* mat = &context->mat;
+        Eigen::VectorXd* rhs = &context->rhs;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        double interval = context->interval; 
+        double lastValue = context->lastVoltages[this->Name]->back(); 
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -159,28 +146,28 @@ public:
 
         nodeCount++;
         int index3 = nodeCount - 1;
-        mat.conservativeResize(nodeCount, nodeCount);
-        mat.col(index3).fill(0);
-        mat.row(index3).fill(0);
+        (*mat).conservativeResize(nodeCount, nodeCount);
+        (*mat).col(index3).fill(0);
+        (*mat).row(index3).fill(0);
 
-        rhs.conservativeResize(nodeCount);
-        rhs(index3) = this->Value/interval*lastValue;
+        (*rhs).conservativeResize(nodeCount);
+        (*rhs)(index3) = this->Value/interval*lastValue;
 
-        mat(index1, index3) = 1;
-        mat(index2, index3) = -1;
-        mat(index3, index1) = this->Value/interval;
-        mat(index3, index2) = -this->Value/interval;
-        mat(index3, index3) = -1;
+        (*mat)(index1, index3) = 1;
+        (*mat)(index2, index3) = -1;
+        (*mat)(index3, index1) = this->Value/interval;
+        (*mat)(index3, index2) = -this->Value/interval;
+        (*mat)(index3, index3) = -1;
         
         nodes.push_back(CircuitNode(Name, "I"));
     }
 
-    double getLastValue(
-        int &nodeCount, 
-        Eigen::VectorXd &result,
-        std::vector<CircuitNode> &nodes,
-        CircuitNode &ground
-    ) {
+    double getLastVoltage(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount;
+        Eigen::VectorXd* result = &context->res;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        CircuitNode &ground = context->ground;
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -196,15 +183,46 @@ public:
         if (it1 != nodes.end())
         {
             int index1 = std::distance(nodes.begin(), it1);
-            value1 = result[index1];
+            value1 = (*result)[index1];
         }
         if (it2 != nodes.end())
         {
             int index2 = std::distance(nodes.begin(), it2);
-            value2 = result[index2];
+            value2 = (*result)[index2];
         }
         
         return value1 - value2;
+    } 
+
+    double getLastCurrent(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount;
+        Eigen::VectorXd* result = &context->res;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        CircuitNode &ground = context->ground;
+
+        auto it1 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->Name; });
+
+        if (it1 == nodes.end()) {
+            throw std::runtime_error("Node not found");
+        }
+
+        int index1 = std::distance(nodes.begin(), it1);
+
+        return (*result)[index1];
+    } 
+
+    double filterLTE(AnalyzeContext* context, double step) {
+        if (context->lastCurrents[this->Name]->size() < 2)
+            return step;
+        auto it = context->lastCurrents[this->Name]->end();
+        double tmp = 2*this->Value/(std::abs(*(it-1)-*(it-2)))*1e-3;
+        if (step > tmp)
+            return step / 2;
+        else if (step * 2 < tmp)
+            return step * 2;
+        else
+            return step;
     } 
 
     void checkNode(
@@ -243,12 +261,12 @@ public:
         return "Inductor";
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    void appendStampDC(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount; 
+        Eigen::MatrixXd &mat = context->mat;
+        Eigen::VectorXd &rhs = context->rhs;
+        std::vector<CircuitNode> &nodes = context->nodes; 
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -278,12 +296,12 @@ public:
         nodes.push_back(CircuitNode(Name, "I"));
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
+    void appendStampAC(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount; 
+        Eigen::MatrixXcd* mat = &context->matc;
+        Eigen::VectorXcd* rhs = &context->rhsc;
+        std::vector<CircuitNode> &nodes = context->nodes; 
+        
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -298,30 +316,30 @@ public:
 
         nodeCount++;
         int index3 = nodeCount - 1;
-        mat.conservativeResize(nodeCount, nodeCount);
-        mat.col(index3).fill(0);
-        mat.row(index3).fill(0);
+        (*mat).conservativeResize(nodeCount, nodeCount);
+        (*mat).col(index3).fill(0);
+        (*mat).row(index3).fill(0);
 
-        rhs.conservativeResize(nodeCount);
-        rhs(index3) = 0;
+        (*rhs).conservativeResize(nodeCount);
+        (*rhs)(index3) = 0;
 
-        mat(index1, index3) = 1;
-        mat(index2, index3) = -1;
-        mat(index3, index1) = 1;
-        mat(index3, index2) = -1;
-        mat(index3, index3) = std::complex<double>(0, -1) * std::complex<double>(this->Value, 0);
+        (*mat)(index1, index3) = 1;
+        (*mat)(index2, index3) = -1;
+        (*mat)(index3, index1) = 1;
+        (*mat)(index3, index2) = -1;
+        (*mat)(index3, index3) = std::complex<double>((double)0, (double)-2 * M_PI * context->freq) * std::complex<double>(this->Value, (double)0);
 
         nodes.push_back(CircuitNode(Name, "I"));
     }
 
-    void appendStampTRAN(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes,
-        double interval,
-        double lastValue
-    ) {
+    void appendStampTRAN(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount; 
+        Eigen::MatrixXd* mat = &context->mat;
+        Eigen::VectorXd* rhs = &context->rhs;
+        std::vector<CircuitNode> &nodes = context->nodes; 
+        double interval = context->interval; 
+        double lastValue = context->lastCurrents[this->Name]->back(); 
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->N1; });
         auto it2 = std::find_if(nodes.begin(), nodes.end(), 
@@ -336,28 +354,60 @@ public:
 
         nodeCount++;
         int index3 = nodeCount - 1;
-        mat.conservativeResize(nodeCount, nodeCount);
-        mat.col(index3).fill(0);
-        mat.row(index3).fill(0);
+        (*mat).conservativeResize(nodeCount, nodeCount);
+        (*mat).col(index3).fill(0);
+        (*mat).row(index3).fill(0);
 
-        rhs.conservativeResize(nodeCount);
-        rhs(index3) = -this->Value/interval*lastValue;
+        (*rhs).conservativeResize(nodeCount);
+        (*rhs)(index3) = -this->Value/interval*lastValue;
 
-        mat(index1, index3) = 1;
-        mat(index2, index3) = -1;
-        mat(index3, index1) = 1;
-        mat(index3, index2) = -1;
-        mat(index3, index3) = -this->Value/interval;
+        (*mat)(index1, index3) = 1;
+        (*mat)(index2, index3) = -1;
+        (*mat)(index3, index1) = 1;
+        (*mat)(index3, index2) = -1;
+        (*mat)(index3, index3) = -this->Value/interval;
         
         nodes.push_back(CircuitNode(Name, "I"));
     }
 
-    double getLastValue(
-        int &nodeCount, 
-        Eigen::VectorXd &result,
-        std::vector<CircuitNode> &nodes,
-        CircuitNode &ground
-    ) {
+    double getLastVoltage(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount;
+        Eigen::VectorXd* result = &context->res;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        CircuitNode &ground = context->ground;
+
+        auto it1 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N1; });
+        auto it2 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N2; });
+
+        if (it1 == nodes.end() && this->N1 != ground.nodeName) {
+            throw std::runtime_error("Node not found");
+        }
+        if (it2 == nodes.end() && this->N2 != ground.nodeName) {
+            throw std::runtime_error("Node not found");
+        }
+        double value1 = 0, value2 = 0;
+        if (it1 != nodes.end())
+        {
+            int index1 = std::distance(nodes.begin(), it1);
+            value1 = (*result)[index1];
+        }
+        if (it2 != nodes.end())
+        {
+            int index2 = std::distance(nodes.begin(), it2);
+            value2 = (*result)[index2];
+        }
+        
+        return value1 - value2;
+    } 
+
+    double getLastCurrent(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount;
+        Eigen::VectorXd* result = &context->res;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        CircuitNode &ground = context->ground;
+
         auto it1 = std::find_if(nodes.begin(), nodes.end(), 
             [&](CircuitNode& n){ return n.nodeName == this->Name; });
 
@@ -367,7 +417,20 @@ public:
 
         int index1 = std::distance(nodes.begin(), it1);
 
-        return result[index1];
+        return (*result)[index1];
+    } 
+
+    double filterLTE(AnalyzeContext* context, double step) {
+        if (context->lastVoltages[this->Name]->size() < 2)
+            return step;
+        auto it = context->lastVoltages[this->Name]->end();
+        double tmp = 2*this->Value/(std::abs(*(it-1)-*(it-2)))*1e-3;
+        if (step > tmp)
+            return step / 2;
+        else if (step * 2 < tmp)
+            return step * 2;
+        else
+            return step;
     } 
 
     void checkNode(
@@ -450,32 +513,16 @@ public:
         nodes.push_back(CircuitNode(Name, "I"));
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, DC_Value);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes, DC_Value);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, std::complex(DC_Value, AC_Mag));
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes, std::complex(AC_Mag, (double)0));
     }
 
-    void appendStampTRAN(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes,
-        double t
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, getValueByTime(t));
+    void appendStampTRAN(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes, getValueByTime(context->ts));
     }
 
     void checkNode(
@@ -544,32 +591,16 @@ public:
         rhs[index2] += value;
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, DC_Value);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes, DC_Value);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, std::complex(DC_Value, AC_Mag));
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes, std::complex(AC_Mag, (double)0));
     }
 
-    void appendStampTRAN(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes,
-        double t
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes, getValueByTime(t));
+    void appendStampTRAN(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes, getValueByTime(context->ts));
     }
 
     void checkNode(
@@ -642,22 +673,12 @@ public:
         mat(index2, index4) += this->Value;
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes);
     }
 
     void checkNode(
@@ -747,22 +768,12 @@ public:
         nodes.push_back(CircuitNode(Name, "I_k"));
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes);
     }
 
     void checkNode(
@@ -852,22 +863,12 @@ public:
         nodes.push_back(CircuitNode(Name, "I_c"));
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes);
     }
 
     void checkNode(
@@ -965,22 +966,12 @@ public:
         nodes.push_back(CircuitNode(Name, "I_c"));
     }
 
-    void appendStampDC(
-        int &nodeCount, 
-        Eigen::MatrixXd &mat, 
-        Eigen::VectorXd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampDC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->mat, context->rhs, context->nodes);
     }
 
-    void appendStampAC(
-        int &nodeCount, 
-        Eigen::MatrixXcd &mat, 
-        Eigen::VectorXcd &rhs,
-        std::vector<CircuitNode> &nodes
-    ) {
-        appendStamp(nodeCount, mat, rhs, nodes);
+    void appendStampAC(AnalyzeContext* context) {
+        appendStamp(context->nodeCount, context->matc, context->rhsc, context->nodes);
     }
 
     void checkNode(
@@ -1009,3 +1000,127 @@ public:
     }
 };
 
+class D_Diode : virtual public BaseDevice, public NonlinearDevice {
+
+public:
+    std::string N1;
+    std::string N2;
+
+    D_Diode(std::string name, std::string n1, std::string n2) 
+        : BaseDevice(name), NonlinearDevice(), N1(n1), N2(n2) {};
+
+    std::string GetDeviceType() {
+        return "Diode";
+    }
+
+    template<typename MatrixType, typename VectorType>
+    void appendStamp(
+        int &nodeCount, 
+        MatrixType &mat, 
+        VectorType &rhs,
+        std::vector<CircuitNode> &nodes,
+        double lastVoltage,
+        double lastCurrent
+    ) {
+        auto it1 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N1; });
+        auto it2 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N2; });
+
+        if (it1 == nodes.end() || it2 == nodes.end()) {
+            throw std::runtime_error("Node not found");
+        }
+
+        int index1 = std::distance(nodes.begin(), it1);
+        int index2 = std::distance(nodes.begin(), it2);
+
+        double g = 40*std::exp(40*lastVoltage);
+        double j = lastCurrent-g*lastVoltage;
+
+        mat(index1, index1) += g;
+        mat(index1, index2) += -g;
+        mat(index2, index1) += -g;
+        mat(index2, index2) += g;
+
+        rhs(index1) += -j;
+        rhs(index2) += j;
+    }
+
+    void appendStampDC(AnalyzeContext* context) {
+        if (context->IterVoltages[this->Name]->back() < 0)
+            return;
+        this->appendStamp(
+            context->nodeCount, 
+            context->mat, 
+            context->rhs, 
+            context->nodes,
+            context->IterVoltages[this->Name]->back(),
+            context->IterCurrents[this->Name]->back()
+        );
+    }
+
+    void appendStampAC(AnalyzeContext* context) {
+        throw std::runtime_error("Not supported");
+    }
+
+    void appendStampTRAN(AnalyzeContext* context) {
+        throw std::runtime_error("Not used");
+    }
+
+    double getLastVoltage(AnalyzeContext* context) {
+        int &nodeCount = context->nodeCount;
+        Eigen::VectorXd* result = &context->res;
+        std::vector<CircuitNode> &nodes = context->nodes;
+        CircuitNode &ground = context->ground;
+
+        auto it1 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N1; });
+        auto it2 = std::find_if(nodes.begin(), nodes.end(), 
+            [&](CircuitNode& n){ return n.nodeName == this->N2; });
+
+        if (it1 == nodes.end() && this->N1 != ground.nodeName) {
+            throw std::runtime_error("Node not found");
+        }
+        if (it2 == nodes.end() && this->N2 != ground.nodeName) {
+            throw std::runtime_error("Node not found");
+        }
+        double value1 = 0, value2 = 0;
+        if (it1 != nodes.end())
+        {
+            int index1 = std::distance(nodes.begin(), it1);
+            value1 = (*result)[index1];
+        }
+        if (it2 != nodes.end())
+        {
+            int index2 = std::distance(nodes.begin(), it2);
+            value2 = (*result)[index2];
+        }
+        
+        return value1 - value2;
+    } 
+
+    double getLastCurrent(AnalyzeContext* context) {
+        double v = getLastVoltage(context);
+        return v<=0 ? 0 : (std::exp(40*v) - 1);
+    } 
+
+    void checkNode(
+        std::ostringstream &oss,
+        std::string &node
+    ) {
+        if (node == N1) oss<<Name<<":N+"<<"\t";
+        if (node == N2) oss<<Name<<":N-"<<"\t";
+    }
+
+    void print(MyConsole* console) {
+        console->log(std::format("*Diode(Name:{}, N+:{}, N-:{})", Name, N1, N2));
+    }
+
+    std::vector<std::string>& getInfoList()
+    {
+        std::vector<std::string>* res = new std::vector<std::string>();
+        res->push_back(std::format("N+:{}", N1));
+        res->push_back(std::format("N-:{}", N2));
+        return *res;
+    }
+};

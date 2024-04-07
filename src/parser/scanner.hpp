@@ -214,7 +214,7 @@ extern char *yytext;
 #ifdef YY_HEADER_EXPORT_START_CONDITIONS
 #define INITIAL 0
 #define state_options 1
-#define state_pulse 2
+#define state_sourcetype 2
 
 #endif
 
@@ -468,7 +468,7 @@ extern int yylex (void);
 #undef yyTABLES_NAME
 #endif
 
-#line 146 "sp.l"
+#line 144 "sp.l"
 
 
 #line 475 "scanner.hpp"

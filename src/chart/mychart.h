@@ -16,7 +16,7 @@ public:
     ~ChartViewWindow();
 
 public:
-    void initChart(std::vector<QAbstractSeries*> &seriesGroups);
+    void initChart(std::vector<QAbstractSeries*> &seriesGroups, bool useLogAxis);
 
 private:
     Ui::ChartViewWindow *ui;

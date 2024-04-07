@@ -12,7 +12,9 @@
 
 class AnalyzeEntry {
 public:
-    std::vector<SweepOptionEntry> sweepEntries;
-    Eigen::VectorXd result;
-    double time;
+    Eigen::VectorXd result; //DC and TRAN
+    Eigen::VectorXcd resultc; //AC
+    std::vector<SweepOptionEntry> sweepEntries; //DC
+    double freq; //AC
+    double time; //TRAN
 };

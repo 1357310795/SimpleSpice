@@ -15,6 +15,8 @@ public:
     std::unordered_map<std::string, int> namemap;
 
     std::vector<BaseDevice*> devices;
+    bool hasNonlinearDevice;
+    
     Command_AC command_AC;
     Command_DC command_DC;
     Command_OP command_OP;
