@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "global.hpp"
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
-#include "myconsole.h"
-#include "circuit/circuit.hpp"
+#include "console/myconsole.h"
+#include "circuit/circuit.h"
 #include "circuit/circuit_node.h"
 #include "cmds/ac_dc.hpp"
+#include "global/global.h"
 
 class AnalyzeEntry {
 public:

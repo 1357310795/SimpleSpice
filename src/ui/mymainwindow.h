@@ -1,12 +1,15 @@
 #ifndef CMAINWINDOW_H
 #define CMAINWINDOW_H
 
+#include "ui_mainwindow2.h"
+
 #include <QMainWindow>
 #include <QDebug>
-#include "ui_mainwindow2.h"
-#include <qss/QtAdvancedStylesheet.h>
 #include <QPushButton>
-#include "SpiceHighlighter.hpp"
+
+#include "qss/QtAdvancedStylesheet.h"
+#include "utils/SpiceHighlighter.hpp"
+#include "global/global.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MyMainWindow; }

@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 140 "sp.y"
+#line 150 "sp.y"
 
     #include <cstdio>
     #include <cstdlib>
@@ -124,7 +124,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 147 "sp.y"
+#line 157 "sp.y"
 
     int    num;
     double value;

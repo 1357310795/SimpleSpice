@@ -6,8 +6,7 @@
 #include <vector>
 #include <cctype>
 #include "parser.hpp"
-#include "global.hpp"
-#include "myconsole.h"
+#include "console/myconsole.h"
 
 double parseValue(const char *str);
 %}

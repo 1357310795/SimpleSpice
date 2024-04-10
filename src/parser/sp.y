@@ -8,13 +8,23 @@
 #include <vector>
 #include <algorithm>
 #include "parser/scanner.hpp"
-#include "global.hpp"
-#include "myconsole.h"
-#include "devices/all_devices.hpp"
+#include "console/myconsole.h"
 #include "cmds/plot.hpp"
 #include "cmds/pulse.hpp"
 #include "cmds/sinusoid.hpp"
 #include "circuit/circuit_node.h"
+#include "global/global.h"
+
+#include "devices/item/resistor.h"
+#include "devices/item/capacitor.h"
+#include "devices/item/inductor.h"
+#include "devices/item/isource.h"
+#include "devices/item/vsource.h"
+#include "devices/item/vcvs.h"
+#include "devices/item/vccs.h"
+#include "devices/item/ccvs.h"
+#include "devices/item/cccs.h"
+#include "devices/item/diode.h"
 
 void yyerror (char const *s) {
    fprintf (stderr, "[SpParser] error at line %d: %s\n", yylineno, s);

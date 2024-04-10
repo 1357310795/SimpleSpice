@@ -3,19 +3,20 @@
 
 #include <vector>
 #include <string>
-#include "global.hpp"
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
-#include "myconsole.h"
-#include "circuit/circuit.hpp"
+#include "console/myconsole.h"
+#include "circuit/circuit.h"
 #include "circuit/circuit_node.h"
 #include "calc/analyze_entry.h"
 #include "calc/analyze_context.h"
 #include "chart/mychart.h"
+#include "global/global.h"
 
 extern MyConsole* console;
 class Circuit;
+class AnalyzeContext;
 
 class CircuitAnalyze
 {

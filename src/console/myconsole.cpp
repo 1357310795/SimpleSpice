@@ -1,5 +1,7 @@
-#include "myconsole.h"
+#include "console/myconsole.h"
 #include <QString>
+
+MyConsole* console;
 
 void MyConsole::log(std::string str)
 {

@@ -199,7 +199,7 @@
   </action>
   <action name="actionParse">
    <property name="icon">
-    <iconset resource="src/mainwindow.qrc">
+    <iconset resource="src/ui/mainwindow.qrc">
      <normaloff>:/images/chip.svg</normaloff>:/images/chip.svg</iconset>
    </property>
    <property name="text">
@@ -213,7 +213,7 @@
   </action>
  </widget>
  <resources>
-  <include location="src/mainwindow.qrc"/>
+  <include location="src/ui/mainwindow.qrc"/>
  </resources>
  <connections/>
 </ui>

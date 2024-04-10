@@ -2,11 +2,13 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include "devices/all_devices.hpp"
+#include "devices/base_device.h"
 #include "cmds/ac_dc.hpp"
 #include "cmds/option.hpp"
 #include "cmds/tran.hpp"
 #include "cmds/plot.hpp"
+
+class BaseDevice;
 
 class Circuit
 {

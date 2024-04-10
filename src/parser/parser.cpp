@@ -78,13 +78,23 @@
 #include <vector>
 #include <algorithm>
 #include "parser/scanner.hpp"
-#include "global.hpp"
-#include "myconsole.h"
-#include "devices/all_devices.hpp"
+#include "console/myconsole.h"
 #include "cmds/plot.hpp"
 #include "cmds/pulse.hpp"
 #include "cmds/sinusoid.hpp"
 #include "circuit/circuit_node.h"
+#include "global/global.h"
+
+#include "devices/item/resistor.h"
+#include "devices/item/capacitor.h"
+#include "devices/item/inductor.h"
+#include "devices/item/isource.h"
+#include "devices/item/vsource.h"
+#include "devices/item/vcvs.h"
+#include "devices/item/vccs.h"
+#include "devices/item/ccvs.h"
+#include "devices/item/cccs.h"
+#include "devices/item/diode.h"
 
 void yyerror (char const *s) {
    fprintf (stderr, "[SpParser] error at line %d: %s\n", yylineno, s);
@@ -206,7 +216,7 @@ void parseOption(char const *op)
 }
 
 
-#line 210 "parser.cpp"
+#line 220 "parser.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -709,15 +719,15 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   240,   240,   241,   242,   243,   244,   248,   249,   250,
-     251,   252,   253,   254,   255,   256,   257,   261,   262,   263,
-     264,   265,   266,   267,   268,   272,   277,   282,   287,   292,
-     297,   302,   307,   312,   318,   326,   331,   336,   341,   346,
-     352,   360,   367,   374,   381,   389,   397,   405,   406,   407,
-     408,   409,   410,   414,   418,   422,   429,   437,   441,   448,
-     452,   459,   464,   469,   474,   480,   489,   496,   506,   511,
-     518,   519,   520,   521,   522,   523,   524,   525,   526,   527,
-     528,   529,   530,   531,   532
+       0,   250,   250,   251,   252,   253,   254,   258,   259,   260,
+     261,   262,   263,   264,   265,   266,   267,   271,   272,   273,
+     274,   275,   276,   277,   278,   282,   287,   292,   297,   302,
+     307,   312,   317,   322,   328,   336,   341,   346,   351,   356,
+     362,   370,   377,   384,   391,   399,   407,   415,   416,   417,
+     418,   419,   420,   424,   428,   432,   439,   447,   451,   458,
+     462,   469,   474,   479,   484,   490,   499,   506,   516,   521,
+     528,   529,   530,   531,   532,   533,   534,   535,   536,   537,
+     538,   539,   540,   541,   542
 };
 #endif
 
@@ -1784,274 +1794,274 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* line: component EOL  */
-#line 240 "sp.y"
+#line 250 "sp.y"
                   { yylineno++; return 0; }
-#line 1790 "parser.cpp"
+#line 1800 "parser.cpp"
     break;
 
   case 3: /* line: command EOL  */
-#line 241 "sp.y"
+#line 251 "sp.y"
                   { yylineno++; return 0; }
-#line 1796 "parser.cpp"
+#line 1806 "parser.cpp"
     break;
 
   case 4: /* line: COMMENTLINE  */
-#line 242 "sp.y"
+#line 252 "sp.y"
                   { yylineno++; console->log(std::format("[SpParser] commentline: {}", (yyvsp[0].str))); return 0; }
-#line 1802 "parser.cpp"
+#line 1812 "parser.cpp"
     break;
 
   case 5: /* line: EOL  */
-#line 243 "sp.y"
+#line 253 "sp.y"
           { yylineno++; return 0; }
-#line 1808 "parser.cpp"
+#line 1818 "parser.cpp"
     break;
 
   case 6: /* line: DOCEOF  */
-#line 244 "sp.y"
+#line 254 "sp.y"
              { return -255; }
-#line 1814 "parser.cpp"
+#line 1824 "parser.cpp"
     break;
 
   case 25: /* resistor: P_RESISTOR node node value  */
-#line 273 "sp.y"
+#line 283 "sp.y"
     { ParseResistor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1820 "parser.cpp"
+#line 1830 "parser.cpp"
     break;
 
   case 26: /* capacitor: P_CAPACITOR node node value  */
-#line 278 "sp.y"
+#line 288 "sp.y"
     { ParseCapacitor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1826 "parser.cpp"
+#line 1836 "parser.cpp"
     break;
 
   case 27: /* inductor: P_INDUCTOR node node value  */
-#line 283 "sp.y"
+#line 293 "sp.y"
     { ParseInductor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1832 "parser.cpp"
+#line 1842 "parser.cpp"
     break;
 
   case 28: /* diode: P_DIODE node node  */
-#line 288 "sp.y"
+#line 298 "sp.y"
     { ParseDiode((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str)); }
-#line 1838 "parser.cpp"
+#line 1848 "parser.cpp"
     break;
 
   case 29: /* vsource: P_VSOURCE node node  */
-#line 293 "sp.y"
+#line 303 "sp.y"
     {
         ParseVSource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
     }
-#line 1846 "parser.cpp"
+#line 1856 "parser.cpp"
     break;
 
   case 30: /* vsource: P_VSOURCE node node value  */
-#line 298 "sp.y"
+#line 308 "sp.y"
     {
         ParseVSource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1854 "parser.cpp"
+#line 1864 "parser.cpp"
     break;
 
   case 31: /* vsource: vsource RK_DC value  */
-#line 303 "sp.y"
+#line 313 "sp.y"
     {
         d_VSource->DC_Value = (yyvsp[0].value);
     }
-#line 1862 "parser.cpp"
+#line 1872 "parser.cpp"
     break;
 
   case 32: /* vsource: vsource RK_AC value  */
-#line 308 "sp.y"
+#line 318 "sp.y"
     {
         d_VSource->AC_Mag = (yyvsp[0].value);
     }
-#line 1870 "parser.cpp"
+#line 1880 "parser.cpp"
     break;
 
   case 33: /* vsource: vsource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
-#line 313 "sp.y"
+#line 323 "sp.y"
     {
         d_VSource->pulse = new Pulse((yyvsp[-7].value), (yyvsp[-6].value), (yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] PULSE detected!"));
     }
-#line 1879 "parser.cpp"
+#line 1889 "parser.cpp"
     break;
 
   case 34: /* vsource: vsource RK_SIN LBRACKET value value value value value RBRACKET  */
-#line 319 "sp.y"
+#line 329 "sp.y"
     {
         d_VSource->sin = new Sinusoid((yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
     }
-#line 1888 "parser.cpp"
+#line 1898 "parser.cpp"
     break;
 
   case 35: /* isource: P_ISOURCE node node  */
-#line 327 "sp.y"
+#line 337 "sp.y"
     {
         ParseISource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
     }
-#line 1896 "parser.cpp"
+#line 1906 "parser.cpp"
     break;
 
   case 36: /* isource: P_ISOURCE node node value  */
-#line 332 "sp.y"
+#line 342 "sp.y"
     {
         ParseISource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1904 "parser.cpp"
+#line 1914 "parser.cpp"
     break;
 
   case 37: /* isource: isource RK_DC value  */
-#line 337 "sp.y"
+#line 347 "sp.y"
     {
         d_ISource->DC_Value = (yyvsp[0].value);
     }
-#line 1912 "parser.cpp"
+#line 1922 "parser.cpp"
     break;
 
   case 38: /* isource: isource RK_AC value  */
-#line 342 "sp.y"
+#line 352 "sp.y"
     {
         d_ISource->AC_Mag = (yyvsp[0].value);
     }
-#line 1920 "parser.cpp"
+#line 1930 "parser.cpp"
     break;
 
   case 39: /* isource: isource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
-#line 347 "sp.y"
+#line 357 "sp.y"
     {
         d_ISource->pulse = new Pulse((yyvsp[-7].value), (yyvsp[-6].value), (yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] PULSE detected!"));
     }
-#line 1929 "parser.cpp"
+#line 1939 "parser.cpp"
     break;
 
   case 40: /* isource: isource RK_SIN LBRACKET value value value value value RBRACKET  */
-#line 353 "sp.y"
+#line 363 "sp.y"
     {
         d_ISource->sin = new Sinusoid((yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
     }
-#line 1938 "parser.cpp"
+#line 1948 "parser.cpp"
     break;
 
   case 41: /* vccs: P_VCCS node node node node value  */
-#line 361 "sp.y"
+#line 371 "sp.y"
     {
         ParseVCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1946 "parser.cpp"
+#line 1956 "parser.cpp"
     break;
 
   case 42: /* vcvs: P_VCVS node node node node value  */
-#line 368 "sp.y"
+#line 378 "sp.y"
     {
         ParseVCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1954 "parser.cpp"
+#line 1964 "parser.cpp"
     break;
 
   case 43: /* cccs: P_CCCS node node node node value  */
-#line 375 "sp.y"
+#line 385 "sp.y"
     {
         ParseCCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1962 "parser.cpp"
+#line 1972 "parser.cpp"
     break;
 
   case 44: /* ccvs: P_CCVS node node node node value  */
-#line 382 "sp.y"
+#line 392 "sp.y"
     {
         ParseCCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
-#line 1970 "parser.cpp"
+#line 1980 "parser.cpp"
     break;
 
   case 45: /* op: CMD_OP  */
-#line 390 "sp.y"
+#line 400 "sp.y"
     {
         circuit->command_OP.enabled = true;
         console->log(std::format("[SpParser] [Command] .OP detected!"));
     }
-#line 1979 "parser.cpp"
+#line 1989 "parser.cpp"
     break;
 
   case 46: /* end: CMD_END  */
-#line 398 "sp.y"
+#line 408 "sp.y"
     {
         console->log(std::format("[SpParser] [Command] .end detected!"));
         return -255;
     }
-#line 1988 "parser.cpp"
+#line 1998 "parser.cpp"
     break;
 
   case 47: /* print: CMD_PRINT RK_DC  */
-#line 405 "sp.y"
+#line 415 "sp.y"
                     { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: DC"); }
-#line 1994 "parser.cpp"
+#line 2004 "parser.cpp"
     break;
 
   case 48: /* print: CMD_PRINT RK_AC  */
-#line 406 "sp.y"
+#line 416 "sp.y"
                       { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: AC"); }
-#line 2000 "parser.cpp"
+#line 2010 "parser.cpp"
     break;
 
   case 49: /* print: CMD_PRINT RK_TRAN  */
-#line 407 "sp.y"
+#line 417 "sp.y"
                         { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); }
-#line 2006 "parser.cpp"
+#line 2016 "parser.cpp"
     break;
 
   case 50: /* print: CMD_PRINT RK_OP  */
-#line 408 "sp.y"
+#line 418 "sp.y"
                       { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: OP"); }
-#line 2012 "parser.cpp"
+#line 2022 "parser.cpp"
     break;
 
   case 51: /* print: print VAR_I  */
-#line 409 "sp.y"
+#line 419 "sp.y"
                   { console->log(std::format("[SpParser] print current: {}\n", (yyvsp[0].str))); }
-#line 2018 "parser.cpp"
+#line 2028 "parser.cpp"
     break;
 
   case 52: /* print: print VAR_V  */
-#line 410 "sp.y"
+#line 420 "sp.y"
                   { console->log(std::format("[SpParser] print voltage: {}\n", (yyvsp[0].str))); }
-#line 2024 "parser.cpp"
+#line 2034 "parser.cpp"
     break;
 
   case 53: /* dc: CMD_DC  */
-#line 414 "sp.y"
+#line 424 "sp.y"
            { 
         circuit->command_DC.enabled = true;
         console->log("[SpParser] [Command] .dc detected!");
     }
-#line 2033 "parser.cpp"
+#line 2043 "parser.cpp"
     break;
 
   case 54: /* dc: dc P_ISOURCE value value value  */
-#line 418 "sp.y"
+#line 428 "sp.y"
                                      { 
         circuit->command_DC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] dc current scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2042 "parser.cpp"
+#line 2052 "parser.cpp"
     break;
 
   case 55: /* dc: dc P_VSOURCE value value value  */
-#line 422 "sp.y"
+#line 432 "sp.y"
                                      { 
         circuit->command_DC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] dc voltage scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2051 "parser.cpp"
+#line 2061 "parser.cpp"
     break;
 
   case 56: /* ac: CMD_AC RK_DEC value value value  */
-#line 429 "sp.y"
+#line 439 "sp.y"
                                     { 
         circuit->command_AC.enabled = true;
         circuit->command_AC.type = DEC;
@@ -2060,108 +2070,108 @@ yyreduce:
         circuit->command_AC.fstop = (yyvsp[0].value);
         console->log("[SpParser] [Command] .ac detected!");
     }
-#line 2064 "parser.cpp"
+#line 2074 "parser.cpp"
     break;
 
   case 57: /* ac: ac P_ISOURCE value value value  */
-#line 437 "sp.y"
+#line 447 "sp.y"
                                      { 
         circuit->command_AC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] ac current scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2073 "parser.cpp"
+#line 2083 "parser.cpp"
     break;
 
   case 58: /* ac: ac P_VSOURCE value value value  */
-#line 441 "sp.y"
+#line 451 "sp.y"
                                      { 
         circuit->command_AC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] ac voltage scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2082 "parser.cpp"
+#line 2092 "parser.cpp"
     break;
 
   case 59: /* options: CMD_OPTIONS  */
-#line 449 "sp.y"
+#line 459 "sp.y"
     {
         console->log("[SpParser] [Command] .options detected!");
     }
-#line 2090 "parser.cpp"
+#line 2100 "parser.cpp"
     break;
 
   case 60: /* options: options OPTIONS_ITEM  */
-#line 453 "sp.y"
+#line 463 "sp.y"
     {
         parseOption((yyvsp[0].str));
     }
-#line 2098 "parser.cpp"
+#line 2108 "parser.cpp"
     break;
 
   case 61: /* plot: CMD_PLOT RK_DC  */
-#line 459 "sp.y"
+#line 469 "sp.y"
                    { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: DC"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_DC;
     }
-#line 2108 "parser.cpp"
+#line 2118 "parser.cpp"
     break;
 
   case 62: /* plot: CMD_PLOT RK_AC  */
-#line 464 "sp.y"
+#line 474 "sp.y"
                      { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: AC"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_AC;
     }
-#line 2118 "parser.cpp"
+#line 2128 "parser.cpp"
     break;
 
   case 63: /* plot: CMD_PLOT RK_TRAN  */
-#line 469 "sp.y"
+#line 479 "sp.y"
                        { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: TRAN"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_TRAN;
     }
-#line 2128 "parser.cpp"
+#line 2138 "parser.cpp"
     break;
 
   case 64: /* plot: plot VAR_I  */
-#line 474 "sp.y"
+#line 484 "sp.y"
                  { 
         console->log(std::format("[SpParser] plot current: {}\n", (yyvsp[0].str))); 
         std::string node = (yyvsp[0].str);
 
         circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "I"));
     }
-#line 2139 "parser.cpp"
+#line 2149 "parser.cpp"
     break;
 
   case 65: /* plot: plot VAR_V  */
-#line 480 "sp.y"
+#line 490 "sp.y"
                  { 
         console->log(std::format("[SpParser] plot voltage: {}\n", (yyvsp[0].str))); 
         std::string node = (yyvsp[0].str);
 
         circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "V"));
     }
-#line 2150 "parser.cpp"
+#line 2160 "parser.cpp"
     break;
 
   case 66: /* tran: CMD_TRAN value value  */
-#line 489 "sp.y"
+#line 499 "sp.y"
                          { 
         circuit->command_TRAN.enabled = true;
         circuit->command_TRAN.tstep = (yyvsp[-1].value);
         circuit->command_TRAN.tstop = (yyvsp[0].value);
         console->log("[SpParser] [Command] .tran detected!");
     }
-#line 2161 "parser.cpp"
+#line 2171 "parser.cpp"
     break;
 
   case 67: /* tran: CMD_TRAN value value value  */
-#line 496 "sp.y"
+#line 506 "sp.y"
                                { 
         circuit->command_TRAN.enabled = true;
         circuit->command_TRAN.tstep = (yyvsp[-2].value);
@@ -2169,120 +2179,120 @@ yyreduce:
         circuit->command_TRAN.tstart = (yyvsp[0].value);
         console->log("[SpParser] [Command] .tran detected!");
     }
-#line 2173 "parser.cpp"
+#line 2183 "parser.cpp"
     break;
 
   case 68: /* value: REAL  */
-#line 507 "sp.y"
+#line 517 "sp.y"
     {
         (yyval.value) = (yyvsp[0].value);
     }
-#line 2181 "parser.cpp"
+#line 2191 "parser.cpp"
     break;
 
   case 69: /* value: INTEGER  */
-#line 512 "sp.y"
+#line 522 "sp.y"
     {
         (yyval.value) = (yyvsp[0].num);
     }
-#line 2189 "parser.cpp"
+#line 2199 "parser.cpp"
     break;
 
   case 70: /* node: STRING  */
-#line 518 "sp.y"
+#line 528 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2195 "parser.cpp"
+#line 2205 "parser.cpp"
     break;
 
   case 71: /* node: P_RESISTOR  */
-#line 519 "sp.y"
+#line 529 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2201 "parser.cpp"
+#line 2211 "parser.cpp"
     break;
 
   case 72: /* node: P_CAPACITOR  */
-#line 520 "sp.y"
+#line 530 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2207 "parser.cpp"
+#line 2217 "parser.cpp"
     break;
 
   case 73: /* node: P_INDUCTOR  */
-#line 521 "sp.y"
+#line 531 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2213 "parser.cpp"
+#line 2223 "parser.cpp"
     break;
 
   case 74: /* node: P_ISOURCE  */
-#line 522 "sp.y"
+#line 532 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2219 "parser.cpp"
+#line 2229 "parser.cpp"
     break;
 
   case 75: /* node: P_VSOURCE  */
-#line 523 "sp.y"
+#line 533 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2225 "parser.cpp"
+#line 2235 "parser.cpp"
     break;
 
   case 76: /* node: P_VCCS  */
-#line 524 "sp.y"
+#line 534 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2231 "parser.cpp"
+#line 2241 "parser.cpp"
     break;
 
   case 77: /* node: P_CCCS  */
-#line 525 "sp.y"
+#line 535 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2237 "parser.cpp"
+#line 2247 "parser.cpp"
     break;
 
   case 78: /* node: P_CCVS  */
-#line 526 "sp.y"
+#line 536 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2243 "parser.cpp"
+#line 2253 "parser.cpp"
     break;
 
   case 79: /* node: P_VCVS  */
-#line 527 "sp.y"
+#line 537 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2249 "parser.cpp"
+#line 2259 "parser.cpp"
     break;
 
   case 80: /* node: P_OPAMP  */
-#line 528 "sp.y"
+#line 538 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2255 "parser.cpp"
+#line 2265 "parser.cpp"
     break;
 
   case 81: /* node: P_SWITCH  */
-#line 529 "sp.y"
+#line 539 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2261 "parser.cpp"
+#line 2271 "parser.cpp"
     break;
 
   case 82: /* node: P_DIODE  */
-#line 530 "sp.y"
+#line 540 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2267 "parser.cpp"
+#line 2277 "parser.cpp"
     break;
 
   case 83: /* node: P_MOSFET  */
-#line 531 "sp.y"
+#line 541 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2273 "parser.cpp"
+#line 2283 "parser.cpp"
     break;
 
   case 84: /* node: INTEGER  */
-#line 533 "sp.y"
+#line 543 "sp.y"
     {
         (yyval.str) = new char[32];
         sprintf((yyval.str), "%d", (yyvsp[0].num));
     }
-#line 2282 "parser.cpp"
+#line 2292 "parser.cpp"
     break;
 
 
-#line 2286 "parser.cpp"
+#line 2296 "parser.cpp"
 
       default: break;
     }
@@ -2511,5 +2521,5 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 539 "sp.y"
+#line 549 "sp.y"
 

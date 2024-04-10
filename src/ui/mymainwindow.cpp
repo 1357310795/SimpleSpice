@@ -1,8 +1,6 @@
 #include "mymainwindow.h"
-
-#include <qss/QtAdvancedStylesheet.h>
-
 #include "ui_mainwindow2.h"
+
 #include <QDir>
 #include <QApplication>
 #include <QAction>
@@ -19,11 +17,11 @@
 #include "parser/scanner.hpp"
 #include "parser/parser.hpp"
 #include "calc/stamp.hpp"
-#include "global.hpp"
-#include "myconsole.h"
-#include "SpiceHighlighter.hpp"
-
+#include "console/myconsole.h"
+#include "utils/SpiceHighlighter.hpp"
+#include "global/global.h"
 #include "chart/mychart.h"
+#include "qss/QtAdvancedStylesheet.h"
 
 #define _STR(x) #x
 #define STRINGIFY(x)  _STR(x)
