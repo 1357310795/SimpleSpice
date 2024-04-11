@@ -15,7 +15,7 @@
 D_Diode::D_Diode(std::string name, std::string n1, std::string n2) 
     : BaseDevice(name), NonlinearDevice(), N1(n1), N2(n2) {}
 
-std::string D_Diode::GetDeviceType() {
+std::string D_Diode::getDeviceType() {
     return "Diode";
 }
 

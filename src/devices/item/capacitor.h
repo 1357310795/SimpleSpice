@@ -21,7 +21,9 @@ public:
 
     D_Capacitor(std::string name, std::string n1, std::string n2, double value);
 
-    std::string GetDeviceType() override;
+    ~D_Capacitor() {}
+
+    std::string getDeviceType() override;
 
     void appendStampDC(AnalyzeContext* context) override;
 

@@ -23,7 +23,9 @@ public:
 
     D_CCVS(std::string name, std::string n1, std::string n2, std::string nc1, std::string nc2, double value);
 
-    std::string GetDeviceType() override;
+    ~D_CCVS() {}
+
+    std::string getDeviceType() override;
 
     template<typename MatrixType, typename VectorType>
     void appendStamp(

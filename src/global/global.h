@@ -1,10 +1,10 @@
 #pragma once
 #include "circuit/circuit.h"
 #include "console/myconsole.h"
-#include "calc/stamp.hpp"
+#include "calc/analyze_manager.hpp"
 
 class Circuit;
-class CircuitAnalyze;
+class AnalyzeManager;
 
 extern Circuit* circuit;
-extern CircuitAnalyze* analyze;
+extern AnalyzeManager* analyze;

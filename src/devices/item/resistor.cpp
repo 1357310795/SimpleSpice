@@ -15,7 +15,7 @@
 D_Resistor::D_Resistor(std::string name, std::string n1, std::string n2, double value) 
     : BaseDevice(name), Value(value), N1(n1), N2(n2) {};
 
-std::string D_Resistor::GetDeviceType() {
+std::string D_Resistor::getDeviceType() {
     return "Resistor";
 }
 

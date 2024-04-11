@@ -13,6 +13,8 @@ class BaseDevice;
 class Circuit
 {
 public:
+    std::string title;
+    
     std::unordered_map<std::string, int> nodemap;
     std::unordered_map<std::string, int> namemap;
 
@@ -25,4 +27,6 @@ public:
     Command_OPTIONS command_OPTIONS;
     Command_TRAN command_TRAN;
     Command_PLOT command_PLOT;
+
+    ~Circuit();
 };

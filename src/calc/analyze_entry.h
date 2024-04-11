@@ -4,11 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
-#include "console/myconsole.h"
-#include "circuit/circuit.h"
-#include "circuit/circuit_node.h"
 #include "cmds/ac_dc.hpp"
-#include "global/global.h"
 
 class AnalyzeEntry {
 public:

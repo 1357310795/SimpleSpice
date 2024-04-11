@@ -21,7 +21,7 @@ D_ISource::D_ISource(std::string name, std::string n1, std::string n2, double va
 D_ISource::D_ISource(std::string name, std::string n1, std::string n2, double value, double ac_mag, double ac_phrase) 
     : BaseDevice(name), N1(n1), N2(n2), SourceDevice(value, ac_mag, ac_phrase) {}
 
-std::string D_ISource::GetDeviceType() {
+std::string D_ISource::getDeviceType() {
     return "ISource";
 }
 

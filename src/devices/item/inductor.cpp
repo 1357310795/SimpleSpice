@@ -15,7 +15,7 @@
 D_Inductor::D_Inductor(std::string name, std::string n1, std::string n2, double value) 
     : BaseDevice(name), DynamicDevice(), Value(value), N1(n1), N2(n2) {};
 
-std::string D_Inductor::GetDeviceType() {
+std::string D_Inductor::getDeviceType() {
     return "Inductor";
 }
 

@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 150 "sp.y"
+#line 151 "sp.y"
 
     #include <cstdio>
     #include <cstdlib>
@@ -105,17 +105,18 @@ extern int yydebug;
     CMD_OPTIONS = 298,             /* CMD_OPTIONS  */
     CMD_PLOT = 299,                /* CMD_PLOT  */
     CMD_TRAN = 300,                /* CMD_TRAN  */
-    OPTIONS_ITEM = 301,            /* OPTIONS_ITEM  */
-    VAR_V = 302,                   /* VAR_V  */
-    VAR_I = 303,                   /* VAR_I  */
-    LBRACKET = 304,                /* LBRACKET  */
-    RBRACKET = 305,                /* RBRACKET  */
-    EOL = 306,                     /* EOL  */
-    STRING = 307,                  /* STRING  */
-    COMMENTLINE = 308,             /* COMMENTLINE  */
-    INTEGER = 309,                 /* INTEGER  */
-    REAL = 310,                    /* REAL  */
-    VALUE = 311                    /* VALUE  */
+    CMD_TITLE = 301,               /* CMD_TITLE  */
+    OPTIONS_ITEM = 302,            /* OPTIONS_ITEM  */
+    VAR_V = 303,                   /* VAR_V  */
+    VAR_I = 304,                   /* VAR_I  */
+    LBRACKET = 305,                /* LBRACKET  */
+    RBRACKET = 306,                /* RBRACKET  */
+    EOL = 307,                     /* EOL  */
+    STRING = 308,                  /* STRING  */
+    COMMENTLINE = 309,             /* COMMENTLINE  */
+    INTEGER = 310,                 /* INTEGER  */
+    REAL = 311,                    /* REAL  */
+    VALUE = 312                    /* VALUE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -124,13 +125,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 157 "sp.y"
+#line 158 "sp.y"
 
     int    num;
     double value;
     char*  str;
 
-#line 134 "parser.hpp"
+#line 135 "parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

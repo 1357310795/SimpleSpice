@@ -12,4 +12,5 @@ public:
     void log(std::string str);
 };
 
+extern MyConsole* console;
 #endif // MYCONSOLE_H

@@ -15,7 +15,7 @@
 D_Capacitor::D_Capacitor(std::string name, std::string n1, std::string n2, double value) 
     : BaseDevice(name), DynamicDevice(), Value(value), N1(n1), N2(n2) {};
 
-std::string D_Capacitor::GetDeviceType() {
+std::string D_Capacitor::getDeviceType() {
     return "Capacitor";
 }
 

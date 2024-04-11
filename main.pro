@@ -29,11 +29,15 @@ RCC_DIR     = build
 UI_DIR      = build
 
 HEADERS += \
+    src/calc/analyze_ac.h \
     src/calc/analyze_context.h \
+    src/calc/analyze_dc.h \
     src/calc/analyze_entry.h \
-    src/calc/stamp.hpp \
+    src/calc/analyze_manager.hpp \
+    src/calc/analyze_tran.h \
     src/chart/mychart.h \
     src/chart/plot_context.h \
+    src/chart/plot_manager.h \
     src/circuit/circuit.h \
     src/circuit/circuit_node.h \
     src/cmds/ac_dc.hpp \
@@ -69,9 +73,14 @@ HEADERS += \
     src/utils/SpiceHighlighter.hpp
 
 SOURCES += src/main.cpp \
+           src/calc/analyze_ac.cpp \
            src/calc/analyze_context.cpp \
+           src/calc/analyze_dc.cpp \
+           src/calc/analyze_tran.cpp \
            src/chart/mychart.cpp \
            src/chart/plot_context.cpp \
+           src/chart/plot_manager.cpp \
+           src/circuit/circuit.cpp \
            src/console/myconsole.cpp \
            src/devices/item/capacitor.cpp \
            src/devices/item/cccs.cpp \

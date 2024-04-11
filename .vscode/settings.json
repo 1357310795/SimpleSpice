@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.mjs": "javascript",
+        "*.html": "html",
+        "format": "cpp",
+        "cmath": "cpp",
+        "complex": "cpp"
+    }
+}

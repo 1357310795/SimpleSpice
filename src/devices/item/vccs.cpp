@@ -15,7 +15,7 @@
 D_VCCS::D_VCCS(std::string name, std::string n1, std::string n2, std::string nc1, std::string nc2, double value) 
     : BaseDevice(name), Value(value), N1(n1), N2(n2), NC1(nc1), NC2(nc2) {}
 
-std::string D_VCCS::GetDeviceType() {
+std::string D_VCCS::getDeviceType() {
     return "VCCS";
 }
 

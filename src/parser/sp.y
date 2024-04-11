@@ -28,6 +28,7 @@
 
 void yyerror (char const *s) {
    fprintf (stderr, "[SpParser] error at line %d: %s\n", yylineno, s);
+   console->log(std::format("[SpParser] error at line {}: {}", yylineno, s));
 }
 
 void addNode(std::string input)
@@ -214,6 +215,7 @@ void parseOption(char const *op)
 %token<str> CMD_OPTIONS
 %token<str> CMD_PLOT
 %token<str> CMD_TRAN
+%token<str> CMD_TITLE
 
 %token<str> OPTIONS_ITEM
 
@@ -268,7 +270,8 @@ component:
     ;
 
 command:
-    op
+    title
+    | op
     | end
     | print
     | dc
@@ -394,6 +397,12 @@ ccvs:
     }
     ;
 
+title:
+    CMD_TITLE STRING
+    {
+        circuit->title = $2;
+    }
+    ;
 
 op:
     CMD_OP

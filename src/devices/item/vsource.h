@@ -24,7 +24,9 @@ public:
 
     D_VSource(std::string name, std::string n1, std::string n2, double value, double ac_mag, double ac_phrase);
 
-    std::string GetDeviceType() override;
+    ~D_VSource() {}
+
+    std::string getDeviceType() override;
 
     template<typename MatrixType, typename VectorType, typename ValueType>
     void appendStamp(

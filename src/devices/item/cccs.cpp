@@ -15,7 +15,7 @@
 D_CCCS::D_CCCS(std::string name, std::string n1, std::string n2, std::string nc1, std::string nc2, double value) 
     : BaseDevice(name), Value(value), N1(n1), N2(n2), NC1(nc1), NC2(nc2) {}
 
-std::string D_CCCS::GetDeviceType() {
+std::string D_CCCS::getDeviceType() {
     return "CCCS";
 }
 

@@ -4,14 +4,29 @@
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
-#include "console/myconsole.h"
 #include "circuit/circuit.h"
 #include "circuit/circuit_node.h"
 #include "cmds/ac_dc.hpp"
 #include "calc/analyze_context.h"
 
 AnalyzeContext::AnalyzeContext() {}
+
 AnalyzeContext::AnalyzeContext(std::vector<CircuitNode> &nodes, int& nodeCount) {
     this->nodes = nodes;
     this->nodeCount = nodeCount;
+}
+
+AnalyzeContext::~AnalyzeContext() {
+    for (auto& pair : this->IterCurrents) {
+        delete pair.second;
+    }
+    for (auto& pair : this->IterVoltages) {
+        delete pair.second;
+    }
+    for (auto& pair : this->lastCurrents) {
+        delete pair.second;
+    }
+    for (auto& pair : this->lastVoltages) {
+        delete pair.second;
+    }
 }

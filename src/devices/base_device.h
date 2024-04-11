@@ -14,10 +14,11 @@ private:
 public:
     std::string Name;
 
-    BaseDevice(){};
-    BaseDevice(std::string name) : Name(name){};
+    BaseDevice() {}
+    BaseDevice(std::string name) : Name(name) {}
+    virtual ~BaseDevice() {}
 
-    virtual std::string GetDeviceType();
+    virtual std::string getDeviceType();
     
     virtual void appendStampDC(AnalyzeContext* context);
 

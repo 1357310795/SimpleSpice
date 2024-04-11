@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <QtCharts>
+#include "chart/plot_context.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class ChartViewWindow; }
@@ -16,7 +17,7 @@ public:
     ~ChartViewWindow();
 
 public:
-    void initChart(std::vector<QAbstractSeries*> &seriesGroups, bool useLogAxis);
+    void initChart(PlotContext& context);
 
 private:
     Ui::ChartViewWindow *ui;

@@ -1,6 +1,6 @@
 #include "circuit/circuit.h"
-#include "calc/stamp.hpp"
+#include "calc/analyze_manager.hpp"
 #include "global/global.h"
 
 Circuit* circuit;
-CircuitAnalyze* analyze;
+AnalyzeManager* analyze;

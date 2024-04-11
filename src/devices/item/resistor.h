@@ -21,7 +21,9 @@ public:
 
     D_Resistor(std::string name, std::string n1, std::string n2, double value);
 
-    std::string GetDeviceType() override;
+    ~D_Resistor() {}
+
+    std::string getDeviceType() override;
 
     template<typename MatrixType, typename VectorType>
     void appendStamp(

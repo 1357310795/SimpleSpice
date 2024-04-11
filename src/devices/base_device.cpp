@@ -8,7 +8,7 @@
 #include "calc/analyze_context.h"
 #include "devices/base_device.h"
 
-std::string BaseDevice::GetDeviceType() {
+std::string BaseDevice::getDeviceType() {
     return "undefined";
 }
 

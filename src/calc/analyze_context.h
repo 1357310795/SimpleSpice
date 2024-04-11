@@ -4,7 +4,6 @@
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
-#include "console/myconsole.h"
 #include "circuit/circuit_node.h"
 #include "cmds/ac_dc.hpp"
 
@@ -35,4 +34,5 @@ public:
 
     AnalyzeContext();
     AnalyzeContext(std::vector<CircuitNode> &nodes, int& nodeCount);
+    ~AnalyzeContext();
 };

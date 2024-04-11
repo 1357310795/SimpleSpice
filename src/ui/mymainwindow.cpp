@@ -16,7 +16,7 @@
 #include <iostream>
 #include "parser/scanner.hpp"
 #include "parser/parser.hpp"
-#include "calc/stamp.hpp"
+#include "calc/analyze_manager.hpp"
 #include "console/myconsole.h"
 #include "utils/SpiceHighlighter.hpp"
 #include "global/global.h"
@@ -55,6 +55,7 @@ MyMainWindow::MyMainWindow(QWidget *parent)
     qApp->setStyleSheet(AdvancedStyleSheet->styleSheet());
     connect(AdvancedStyleSheet, SIGNAL(stylesheetChanged()), this,
         SLOT(onStyleManagerStylesheetChanged()));
+    setWindowTitle(tr("SimpleSpice"));
 
     console = new MyConsole(ui.consoleText);
     highlighter = new SpiceHighlighter(ui.textEdit->document());
@@ -81,12 +82,12 @@ void MyMainWindow::on_actionNew_triggered()
 
 void MyMainWindow::on_actionOpen_triggered()
 {
-    fileName = QFileDialog::getOpenFileName(this, tr("Open File"), tr(""), "All Files (*.*)");
+    auto newFileName = QFileDialog::getOpenFileName(this, tr("Open File"), tr(""), "All Files (*.*)");
     /// If the dialog is directly closed, the filename will be null.
-    if (fileName == "") {
+    if (newFileName == "") {
         return;
     } else {
-        QFile file(fileName);
+        QFile file(newFileName);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
             QMessageBox::warning(this, tr("Error"), tr("Failed to open file!"));
             return;
@@ -98,6 +99,7 @@ void MyMainWindow::on_actionOpen_triggered()
                 while (!textStream.atEnd()) {
                     ui.textEdit->setPlainText(textStream.readAll());
                 }
+                fileName = newFileName;
                 ui.textEdit->show();
                 file.close();
             }
@@ -168,27 +170,35 @@ void MyMainWindow::on_actionParse_triggered()
         return;
     }
     ui.consoleText->clear();
+
+    if (circuit)
+        delete circuit;
     circuit = new Circuit();
 
     FILE *file;
     file = fopen(fileName.toLocal8Bit().data(), "rb");
-    yyin = file;
-    if (!yyin) {
+    
+    if (!file) {
+        QMessageBox::warning(this, tr("Error"), tr("Failed to open file!"),
+                             QMessageBox::Ok);
         console->log(std::format("[SpParser] Can not open {}.", fileName.toLocal8Bit().data()));
-        exit(1);
+        return;
     }
 
     // read title and move the pointer to second line
     char title[128];
-    fgets(title, 128, yyin);
+    fgets(title, 128, file);
     yylineno++;
     console->log(std::format("[SpParser] Title: {}", title));
+    circuit->title = title;
 
+    yyset_in(file);
     int ret = yyparse();
     while (ret == 0) {
         ret = yyparse();
     }
     fclose(yyin);
+    yylex_destroy();
 
     if (ret == -255)
     {
@@ -197,13 +207,15 @@ void MyMainWindow::on_actionParse_triggered()
     }
     else
     {
+        QMessageBox::warning(this, tr("Error"), tr("Parse failed. Check the console for error message."),
+                             QMessageBox::Ok);
         console->log(std::format("[SpParser] Parse failed."));
         return;
     }
 
     ui.treeWidget->clear();
     for (auto& device : circuit->devices) {
-        auto title = std::format("{} [{}]", device->Name, device->GetDeviceType());
+        auto title = std::format("{} [{}]", device->Name, device->getDeviceType());
         QTreeWidgetItem* topitem = new QTreeWidgetItem(QStringList()<<title.c_str());
         ui.treeWidget->addTopLevelItem(topitem);
         auto infos = device->getInfoList();
@@ -215,14 +227,16 @@ void MyMainWindow::on_actionParse_triggered()
         //device->appendStamp(nodeCount, mat, rhs, nodes);
     }
 
-    if (circuit->command_PLOT.enabled)
-    {
-        for (auto& plotnode : circuit->command_PLOT.nodes) {
-            console->log(std::format("[SpParser] Plot: {}({})", plotnode.prefix, plotnode.nodeName));
-        }
-    }
+    // if (circuit->command_PLOT.enabled)
+    // {
+    //     for (auto& plotnode : circuit->command_PLOT.nodes) {
+    //         console->log(std::format("[SpParser] Plot: {}({})", plotnode.prefix, plotnode.nodeName));
+    //     }
+    // }
 
-    analyze = new CircuitAnalyze(circuit);
+    if (analyze)
+        delete analyze;
+    analyze = new AnalyzeManager(circuit);
     analyze->StartAnalyze();
 }
 

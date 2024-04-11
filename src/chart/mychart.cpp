@@ -1,6 +1,8 @@
-#include "chart/mychart.h"
 #include <QDebug>
 #include <QtCharts>
+#include <QString>
+#include "chart/mychart.h"
+#include "chart/plot_context.h"
 
 QT_CHARTS_USE_NAMESPACE
 #include "ui_mychart.h"
@@ -11,7 +13,7 @@ ChartViewWindow::ChartViewWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->setWindowTitle("QtCharts绘图");
+    this->setWindowTitle("SimpleSpice - 仿真结果");
     //initChart();
 }
 
@@ -20,71 +22,69 @@ ChartViewWindow::~ChartViewWindow()
     delete ui;
 }
 
-void ChartViewWindow::initChart(std::vector<QAbstractSeries*> &seriesGroups, bool useLogAxis)
+void ChartViewWindow::initChart(PlotContext& context)
 {
-    // QSplineSeries* series = new QSplineSeries();   // 创建一个样条曲线对象
-    // series->setName("曲线");
+    QChart* chart = ui->chartView->chart();    // 获取一个chart用于管理不同类型的series和其他图表相关对象
+    //chart->legend()->hide();                   // 隐藏图例
+    chart->setTitle(QString::fromStdString(context.title));
+    QAbstractAxis* axisX;
+    QAbstractAxis* axisY;
+    QAbstractAxis* axisZ;
+    for (auto &series : context.seriesGroups)
+        chart->addSeries(series); 
+    if (!context.useLogAxis)
+    {
+        axisX = new QValueAxis();
+        ((QValueAxis*)axisX)->setLabelFormat("%.2e");
+        ((QValueAxis*)axisX)->setTitleText(QString::fromStdString(context.axisXTitle));
+        chart->addAxis(axisX, Qt::AlignBottom);
+        axisY = new QValueAxis();
+        ((QValueAxis*)axisY)->setLabelFormat("%.2e");
+        ((QValueAxis*)axisY)->setTitleText(QString::fromStdString(context.axisYTitle));
+        chart->addAxis(axisY, Qt::AlignLeft);
+    }
+    else
+    {
+        axisX = new QLogValueAxis();
+        ((QLogValueAxis*)axisX)->setLabelFormat("%.2e");
+        ((QLogValueAxis*)axisX)->setTitleText(QString::fromStdString(context.axisXTitle));
+        ((QLogValueAxis*)axisX)->setBase(10.0);
+        ((QLogValueAxis*)axisX)->setMinorTickCount(-1);
+        chart->addAxis(axisX, Qt::AlignBottom);
+        axisY = new QValueAxis();
+        ((QValueAxis*)axisY)->setLabelFormat("%.2e");
+        ((QValueAxis*)axisY)->setTitleText(QString::fromStdString(context.axisYTitle));
+        chart->addAxis(axisY, Qt::AlignLeft);
+    }
+    if (context.useExtraAxis)
+    {
+        axisZ = new QValueAxis();
+        ((QValueAxis*)axisZ)->setLabelFormat("%.2f");
+        ((QValueAxis*)axisZ)->setTitleText(QString::fromStdString(context.axisZTitle));
+        chart->addAxis(axisZ, Qt::AlignRight);
+    }
 
-    // #if 1
-    //     // 添加数据方式1
-    //     series->append(0, 10);
-    //     series->append(1, 1);
-    //     series->append(2, 4);
-    //     series->append(3, 7);
-    //     series->append(4, 13);
-    //     // 添加数据方式2
-    //     *series << QPointF(5, 3)<< QPointF(6, 6)<< QPointF(7, 13)<< QPointF(8, 5);
-    // #else  // 添加数据方式3，一次性更新所有数据
-    //     QList<QPointF> points;
-    //     for(int i = 0; i < 20; i++)
-    //     {
-    //         points.append(QPointF(i, i %7));
-    //     }
-    //     series->replace(points);
-    // #endif
-
-        QChart* chart = ui->chartView->chart();    // 获取一个chart用于管理不同类型的series和其他图表相关对象
-        //chart->legend()->hide();                   // 隐藏图例
-        chart->setTitle("曲线图图表标题");           // 设置标题
-
-        QAbstractAxis* axisX;
-        QAbstractAxis* axisY;
-
-        for (auto &series : seriesGroups)
-            chart->addSeries(series); 
-
-        if (!useLogAxis)
+    if (context.useExtraAxis)
+    {
+        for (int i = 0; i < context.seriesGroups.size(); i += 2)
         {
-            axisX = new QValueAxis();
-            chart->addAxis(axisX, Qt::AlignBottom);
-            axisY = new QValueAxis();
-            chart->addAxis(axisY, Qt::AlignLeft);
+            context.seriesGroups[i]->attachAxis(axisX);
+            context.seriesGroups[i]->attachAxis(axisY);
+            context.seriesGroups[i+1]->attachAxis(axisX);
+            context.seriesGroups[i+1]->attachAxis(axisZ);
         }
-        else
-        {
-            axisX = new QLogValueAxis();
-            //axisY.setLabelFormat('%g')
-            //axisY.setTitleText('值')
-            ((QLogValueAxis*)axisX)->setBase(10.0);
-            ((QLogValueAxis*)axisX)->setMinorTickCount(-1);
-            chart->addAxis(axisX, Qt::AlignBottom);
-
-            axisY = new QValueAxis();
-            chart->addAxis(axisY, Qt::AlignLeft);
-            //axisX.setLabelFormat('%i');
-            //axisX.setTitleText('数据点');
-            //axisX.setTickCount(len(lineSeries));
-            //lineSeries.attachAxis(axisX);
-        }
-
-        for (auto &series : seriesGroups)
+    }
+    else
+    {
+        for (auto &series : context.seriesGroups)
         {
             series->attachAxis(axisX);
             series->attachAxis(axisY);
         }
-        // chart->axes(Qt::Vertical).first()->setRange(0, 20);  // 设置Y轴的范围
-
-        ui->chartView->setRenderHint(QPainter::Antialiasing);  // 设置抗锯齿
+    }
+    
+    // chart->axes(Qt::Vertical).first()->setRange(0, 20);  // 设置Y轴的范围
+    ui->chartView->setRenderHint(QPainter::Antialiasing);  // 设置抗锯齿
 }
 
 

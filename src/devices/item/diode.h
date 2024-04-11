@@ -20,7 +20,9 @@ public:
 
     D_Diode(std::string name, std::string n1, std::string n2);
 
-    std::string GetDeviceType() override;
+    ~D_Diode() {}
+
+    std::string getDeviceType() override;
 
     template<typename MatrixType, typename VectorType>
     void appendStamp(

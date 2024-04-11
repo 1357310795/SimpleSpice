@@ -11,7 +11,7 @@
 double parseValue(const char *str);
 %}
 
-%s state_options state_sourcetype
+%s state_options state_sourcetype state_title
 
 ALPHA       [_A-Za-z]
 DIGIT       [0-9]
@@ -71,6 +71,7 @@ CMD_AC          \.[Aa][Cc]
 CMD_OPTIONS     \.[Oo][Pp][Tt][Ii][Oo][Nn][Ss]
 CMD_PLOT        \.[Pp][Ll][Oo][Tt]
 CMD_TRAN        \.[Tt][Rr][Aa][Nn]
+CMD_TITLE        \.[Tt][Ii][Tt][Ll][Ee]
 
 OP_NODE     \.[Nn][Oo][Dd][Ee]
 OP_LIST     \.[Ll][Ii][Ss][Tt]
@@ -86,6 +87,7 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 <state_options>{STRING}  { yylval.str = strdup(yytext); return OPTIONS_ITEM;   }
 <state_sourcetype>{LBRACKET}     { return LBRACKET; }
 <state_sourcetype>{RBRACKET}     { return RBRACKET; }
+<state_title>{STRING}  { yylval.str = strdup(yytext); return STRING;   }
 
 {P_RESISTOR}    { yylval.str = strdup(yytext);  return P_RESISTOR;   }
 {P_CAPACITOR}   { yylval.str = strdup(yytext);  return P_CAPACITOR;  }
@@ -133,6 +135,7 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 {CMD_OPTIONS}       { BEGIN(state_options); return CMD_OPTIONS; }
 {CMD_PLOT}          { return CMD_PLOT; }
 {CMD_TRAN}          { return CMD_TRAN; }
+{CMD_TITLE}         { BEGIN(state_title); return CMD_TITLE; }
 
 {VAR_V}             { yylval.str = strdup(yytext); return VAR_V; }
 {VAR_I}             { yylval.str = strdup(yytext); return VAR_I; }

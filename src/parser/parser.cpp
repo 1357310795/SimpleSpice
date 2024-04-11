@@ -98,6 +98,7 @@
 
 void yyerror (char const *s) {
    fprintf (stderr, "[SpParser] error at line %d: %s\n", yylineno, s);
+   console->log(std::format("[SpParser] error at line {}: {}", yylineno, s));
 }
 
 void addNode(std::string input)
@@ -216,7 +217,7 @@ void parseOption(char const *op)
 }
 
 
-#line 220 "parser.cpp"
+#line 221 "parser.cpp"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -290,41 +291,43 @@ enum yysymbol_kind_t
   YYSYMBOL_CMD_OPTIONS = 43,               /* CMD_OPTIONS  */
   YYSYMBOL_CMD_PLOT = 44,                  /* CMD_PLOT  */
   YYSYMBOL_CMD_TRAN = 45,                  /* CMD_TRAN  */
-  YYSYMBOL_OPTIONS_ITEM = 46,              /* OPTIONS_ITEM  */
-  YYSYMBOL_VAR_V = 47,                     /* VAR_V  */
-  YYSYMBOL_VAR_I = 48,                     /* VAR_I  */
-  YYSYMBOL_LBRACKET = 49,                  /* LBRACKET  */
-  YYSYMBOL_RBRACKET = 50,                  /* RBRACKET  */
-  YYSYMBOL_EOL = 51,                       /* EOL  */
-  YYSYMBOL_STRING = 52,                    /* STRING  */
-  YYSYMBOL_COMMENTLINE = 53,               /* COMMENTLINE  */
-  YYSYMBOL_INTEGER = 54,                   /* INTEGER  */
-  YYSYMBOL_REAL = 55,                      /* REAL  */
-  YYSYMBOL_VALUE = 56,                     /* VALUE  */
-  YYSYMBOL_YYACCEPT = 57,                  /* $accept  */
-  YYSYMBOL_line = 58,                      /* line  */
-  YYSYMBOL_component = 59,                 /* component  */
-  YYSYMBOL_command = 60,                   /* command  */
-  YYSYMBOL_resistor = 61,                  /* resistor  */
-  YYSYMBOL_capacitor = 62,                 /* capacitor  */
-  YYSYMBOL_inductor = 63,                  /* inductor  */
-  YYSYMBOL_diode = 64,                     /* diode  */
-  YYSYMBOL_vsource = 65,                   /* vsource  */
-  YYSYMBOL_isource = 66,                   /* isource  */
-  YYSYMBOL_vccs = 67,                      /* vccs  */
-  YYSYMBOL_vcvs = 68,                      /* vcvs  */
-  YYSYMBOL_cccs = 69,                      /* cccs  */
-  YYSYMBOL_ccvs = 70,                      /* ccvs  */
-  YYSYMBOL_op = 71,                        /* op  */
-  YYSYMBOL_end = 72,                       /* end  */
-  YYSYMBOL_print = 73,                     /* print  */
-  YYSYMBOL_dc = 74,                        /* dc  */
-  YYSYMBOL_ac = 75,                        /* ac  */
-  YYSYMBOL_options = 76,                   /* options  */
-  YYSYMBOL_plot = 77,                      /* plot  */
-  YYSYMBOL_tran = 78,                      /* tran  */
-  YYSYMBOL_value = 79,                     /* value  */
-  YYSYMBOL_node = 80                       /* node  */
+  YYSYMBOL_CMD_TITLE = 46,                 /* CMD_TITLE  */
+  YYSYMBOL_OPTIONS_ITEM = 47,              /* OPTIONS_ITEM  */
+  YYSYMBOL_VAR_V = 48,                     /* VAR_V  */
+  YYSYMBOL_VAR_I = 49,                     /* VAR_I  */
+  YYSYMBOL_LBRACKET = 50,                  /* LBRACKET  */
+  YYSYMBOL_RBRACKET = 51,                  /* RBRACKET  */
+  YYSYMBOL_EOL = 52,                       /* EOL  */
+  YYSYMBOL_STRING = 53,                    /* STRING  */
+  YYSYMBOL_COMMENTLINE = 54,               /* COMMENTLINE  */
+  YYSYMBOL_INTEGER = 55,                   /* INTEGER  */
+  YYSYMBOL_REAL = 56,                      /* REAL  */
+  YYSYMBOL_VALUE = 57,                     /* VALUE  */
+  YYSYMBOL_YYACCEPT = 58,                  /* $accept  */
+  YYSYMBOL_line = 59,                      /* line  */
+  YYSYMBOL_component = 60,                 /* component  */
+  YYSYMBOL_command = 61,                   /* command  */
+  YYSYMBOL_resistor = 62,                  /* resistor  */
+  YYSYMBOL_capacitor = 63,                 /* capacitor  */
+  YYSYMBOL_inductor = 64,                  /* inductor  */
+  YYSYMBOL_diode = 65,                     /* diode  */
+  YYSYMBOL_vsource = 66,                   /* vsource  */
+  YYSYMBOL_isource = 67,                   /* isource  */
+  YYSYMBOL_vccs = 68,                      /* vccs  */
+  YYSYMBOL_vcvs = 69,                      /* vcvs  */
+  YYSYMBOL_cccs = 70,                      /* cccs  */
+  YYSYMBOL_ccvs = 71,                      /* ccvs  */
+  YYSYMBOL_title = 72,                     /* title  */
+  YYSYMBOL_op = 73,                        /* op  */
+  YYSYMBOL_end = 74,                       /* end  */
+  YYSYMBOL_print = 75,                     /* print  */
+  YYSYMBOL_dc = 76,                        /* dc  */
+  YYSYMBOL_ac = 77,                        /* ac  */
+  YYSYMBOL_options = 78,                   /* options  */
+  YYSYMBOL_plot = 79,                      /* plot  */
+  YYSYMBOL_tran = 80,                      /* tran  */
+  YYSYMBOL_value = 81,                     /* value  */
+  YYSYMBOL_node = 82                       /* node  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -653,21 +656,21 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  79
+#define YYFINAL  82
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   227
+#define YYLAST   230
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  57
+#define YYNTOKENS  58
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  24
+#define YYNNTS  25
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  84
+#define YYNRULES  86
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  179
+#define YYNSTATES  182
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   311
+#define YYMAXUTOK   312
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -712,22 +715,22 @@ static const yytype_int8 yytranslate[] =
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
       35,    36,    37,    38,    39,    40,    41,    42,    43,    44,
       45,    46,    47,    48,    49,    50,    51,    52,    53,    54,
-      55,    56
+      55,    56,    57
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   250,   250,   251,   252,   253,   254,   258,   259,   260,
-     261,   262,   263,   264,   265,   266,   267,   271,   272,   273,
-     274,   275,   276,   277,   278,   282,   287,   292,   297,   302,
-     307,   312,   317,   322,   328,   336,   341,   346,   351,   356,
-     362,   370,   377,   384,   391,   399,   407,   415,   416,   417,
-     418,   419,   420,   424,   428,   432,   439,   447,   451,   458,
-     462,   469,   474,   479,   484,   490,   499,   506,   516,   521,
-     528,   529,   530,   531,   532,   533,   534,   535,   536,   537,
-     538,   539,   540,   541,   542
+       0,   252,   252,   253,   254,   255,   256,   260,   261,   262,
+     263,   264,   265,   266,   267,   268,   269,   273,   274,   275,
+     276,   277,   278,   279,   280,   281,   285,   290,   295,   300,
+     305,   310,   315,   320,   325,   331,   339,   344,   349,   354,
+     359,   365,   373,   380,   387,   394,   401,   408,   416,   424,
+     425,   426,   427,   428,   429,   433,   437,   441,   448,   456,
+     460,   467,   471,   478,   483,   488,   493,   499,   508,   515,
+     525,   530,   537,   538,   539,   540,   541,   542,   543,   544,
+     545,   546,   547,   548,   549,   550,   551
 };
 #endif
 
@@ -750,12 +753,12 @@ static const char *const yytname[] =
   "RK_LIN", "RK_OCT", "RK_PAT", "RK_PE", "RK_PL", "RK_POI", "RK_PU",
   "RK_PULSE", "RK_PWL", "RK_R", "RK_RD", "RK_SFFM", "RK_SIN", "RK_OP",
   "RK_TRAN", "CMD_OP", "CMD_END", "CMD_PRINT", "CMD_DC", "CMD_AC",
-  "CMD_OPTIONS", "CMD_PLOT", "CMD_TRAN", "OPTIONS_ITEM", "VAR_V", "VAR_I",
-  "LBRACKET", "RBRACKET", "EOL", "STRING", "COMMENTLINE", "INTEGER",
-  "REAL", "VALUE", "$accept", "line", "component", "command", "resistor",
-  "capacitor", "inductor", "diode", "vsource", "isource", "vccs", "vcvs",
-  "cccs", "ccvs", "op", "end", "print", "dc", "ac", "options", "plot",
-  "tran", "value", "node", YY_NULLPTR
+  "CMD_OPTIONS", "CMD_PLOT", "CMD_TRAN", "CMD_TITLE", "OPTIONS_ITEM",
+  "VAR_V", "VAR_I", "LBRACKET", "RBRACKET", "EOL", "STRING", "COMMENTLINE",
+  "INTEGER", "REAL", "VALUE", "$accept", "line", "component", "command",
+  "resistor", "capacitor", "inductor", "diode", "vsource", "isource",
+  "vccs", "vcvs", "cccs", "ccvs", "title", "op", "end", "print", "dc",
+  "ac", "options", "plot", "tran", "value", "node", YY_NULLPTR
 };
 
 static const char *
@@ -765,7 +768,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-45)
+#define YYPACT_NINF (-42)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -779,24 +782,25 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      27,   -45,    81,    81,    81,    81,    81,    81,    81,    81,
-      81,    81,   -45,   -45,    -8,   -45,    -2,   -45,     3,   -44,
-     -45,   -45,    24,   -25,   -24,   -45,   -45,   -45,   -45,   132,
-     192,   -45,   -45,   -45,   -45,   -45,   -45,   -34,     8,    10,
-     -21,   -26,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,
-     -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,    81,    81,
-      81,    81,    81,    81,    81,    81,    81,    81,   -45,   -45,
-     -45,   -45,   -44,   -45,   -45,   -45,   -45,   -45,   -44,   -45,
-     -45,   -45,   -44,   -44,    -6,    -5,   -44,   -44,    -4,    -1,
-     -45,   -45,   -44,   -44,   -44,   -44,   -45,   -45,   -45,   -44,
-     -44,   -44,   -44,   -44,    81,    81,    81,    81,   -45,   -44,
-     -44,   -45,   -45,   -44,   -44,   -45,   -45,   -44,   -44,   -44,
-     -44,   -44,   -44,   -45,   -45,   -45,   -45,   -45,    81,    81,
-      81,    81,   -44,   -45,   -44,   -44,   -44,   -44,   -44,   -44,
-     -44,   -44,   -44,   -44,   -44,   -44,   -45,   -44,   -44,   -44,
-     -44,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -44,
-     -44,   -44,   -44,   -44,   -44,   -44,   -44,   -44,    -9,   -44,
-       0,   -44,   -45,   -44,   -45,     1,     2,   -45,   -45
+      29,   -42,    83,    83,    83,    83,    83,    83,    83,    83,
+      83,    83,   -42,   -42,    -8,   -42,   -10,   -42,    -7,   -41,
+     -29,   -42,   -42,    25,   -25,   -21,   -42,   -42,   -42,   -42,
+     135,   195,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -32,
+      11,    13,    -5,   -26,   -42,   -42,   -42,   -42,   -42,   -42,
+     -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,
+      83,    83,    83,    83,    83,    83,    83,    83,    83,    83,
+     -42,   -42,   -42,   -42,   -41,   -42,   -42,   -42,   -42,   -42,
+     -41,   -42,   -42,   -42,   -42,   -41,   -41,   -24,    -4,   -41,
+     -41,    -2,    -1,   -42,   -42,   -41,   -41,   -41,   -41,   -42,
+     -42,   -42,   -41,   -41,   -41,   -41,   -41,    83,    83,    83,
+      83,   -42,   -41,   -41,   -42,   -42,   -41,   -41,   -42,   -42,
+     -41,   -41,   -41,   -41,   -41,   -41,   -42,   -42,   -42,   -42,
+     -42,    83,    83,    83,    83,   -41,   -42,   -41,   -41,   -41,
+     -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -42,
+     -41,   -41,   -41,   -41,   -42,   -42,   -42,   -42,   -42,   -42,
+     -42,   -42,   -41,   -41,   -41,   -41,   -41,   -41,   -41,   -41,
+     -41,    -6,   -41,     0,   -41,   -42,   -41,   -42,     1,     2,
+     -42,   -42
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -805,39 +809,40 @@ static const yytype_int16 yypact[] =
 static const yytype_int8 yydefact[] =
 {
        0,     6,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    45,    46,     0,    53,     0,    59,     0,     0,
-       5,     4,     0,     0,     0,     7,     8,     9,    16,    10,
-      11,    13,    12,    14,    15,    17,    18,    19,    20,    21,
-      22,    23,    24,    71,    72,    73,    74,    75,    76,    77,
-      78,    79,    80,    81,    82,    83,    70,    84,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,     0,    48,    47,
-      50,    49,     0,    62,    61,    63,    69,    68,     0,     1,
-       2,     3,     0,     0,     0,     0,     0,     0,     0,     0,
-      52,    51,     0,     0,     0,     0,    60,    65,    64,     0,
-       0,     0,    35,    29,     0,     0,     0,     0,    28,     0,
-      66,    32,    31,     0,     0,    38,    37,     0,     0,     0,
-       0,     0,     0,    25,    26,    27,    36,    30,     0,     0,
-       0,     0,     0,    67,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    56,     0,     0,     0,
-       0,    54,    55,    57,    58,    41,    43,    44,    42,     0,
+       0,     0,    47,    48,     0,    55,     0,    61,     0,     0,
+       0,     5,     4,     0,     0,     0,     7,     8,     9,    16,
+      10,    11,    13,    12,    14,    15,    17,    18,    19,    20,
+      21,    22,    23,    24,    25,    73,    74,    75,    76,    77,
+      78,    79,    80,    81,    82,    83,    84,    85,    72,    86,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    34,     0,    40,     0,     0,    33,    39
+      50,    49,    52,    51,     0,    64,    63,    65,    71,    70,
+       0,    46,     1,     2,     3,     0,     0,     0,     0,     0,
+       0,     0,     0,    54,    53,     0,     0,     0,     0,    62,
+      67,    66,     0,     0,     0,    36,    30,     0,     0,     0,
+       0,    29,     0,    68,    33,    32,     0,     0,    39,    38,
+       0,     0,     0,     0,     0,     0,    26,    27,    28,    37,
+      31,     0,     0,     0,     0,     0,    69,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,    58,
+       0,     0,     0,     0,    56,    57,    59,    60,    42,    44,
+      45,    43,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    35,     0,    41,     0,     0,
+      34,    40
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,
-     -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,   -45,
-     -45,   -45,    37,    -3
+     -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,
+     -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,   -42,
+     -42,   -42,   -42,    37,    -3
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,    22,    23,    24,    25,    26,    27,    28,    29,    30,
-      31,    32,    33,    34,    35,    36,    37,    38,    39,    40,
-      41,    42,    78,    58
+       0,    23,    24,    25,    26,    27,    28,    29,    30,    31,
+      32,    33,    34,    35,    36,    37,    38,    39,    40,    41,
+      42,    43,    44,    80,    60
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -845,56 +850,58 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      76,    77,    69,    90,    91,    92,    93,    94,    95,    72,
-      73,    97,    98,    74,    79,    96,    80,    81,    70,    71,
-       1,     2,     3,     4,     5,     6,     7,     8,     9,    10,
-      75,   172,    11,   113,   114,   117,     0,     0,   118,     0,
-     174,   177,   178,     0,     0,    99,   100,   101,   102,   103,
-     104,   105,   106,   107,   108,    12,    13,    14,    15,    16,
-      17,    18,    19,     0,     0,     0,     0,     0,    20,     0,
-      21,     0,     0,     0,     0,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55,     0,     0,
-       0,   128,   129,   130,   131,     0,     0,     0,     0,   109,
-       0,     0,     0,     0,     0,   110,     0,     0,     0,   111,
-     112,     0,     0,   115,   116,   142,   143,   144,   145,   119,
-     120,   121,   122,    56,     0,    57,   123,   124,   125,   126,
-     127,     0,     0,     0,     0,     0,   132,   133,     0,    82,
-     134,   135,    83,     0,   136,   137,   138,   139,   140,   141,
-       0,     0,    84,     0,     0,     0,     0,    85,     0,   146,
-       0,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   157,   158,     0,   159,   160,   161,   162,     0,     0,
-       0,     0,     0,     0,     0,     0,   163,   164,   165,   166,
-     167,   168,   169,   170,   171,     0,   173,     0,   175,    86,
-     176,     0,    87,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,    88,     0,     0,     0,     0,    89
+      61,    62,    63,    64,    65,    66,    67,    68,    69,    70,
+      75,    74,    71,    76,    78,    79,    93,    94,    95,    96,
+      97,    98,   100,   101,    81,    82,   116,    83,    72,    73,
+      77,    84,     1,     2,     3,     4,     5,     6,     7,     8,
+       9,    10,    99,     0,    11,   175,   117,     0,   120,   121,
+       0,   177,   180,   181,     0,     0,     0,   102,   103,   104,
+     105,   106,   107,   108,   109,   110,   111,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,     0,     0,     0,     0,
+       0,    21,     0,    22,     0,     0,     0,    45,    46,    47,
+      48,    49,    50,    51,    52,    53,    54,    55,    56,    57,
+       0,     0,     0,     0,   131,   132,   133,   134,     0,     0,
+       0,   112,     0,     0,     0,     0,     0,   113,     0,     0,
+       0,     0,   114,   115,     0,     0,   118,   119,   145,   146,
+     147,   148,   122,   123,   124,   125,    58,     0,    59,   126,
+     127,   128,   129,   130,     0,     0,     0,     0,     0,   135,
+     136,     0,    85,   137,   138,    86,     0,   139,   140,   141,
+     142,   143,   144,     0,     0,    87,     0,     0,     0,     0,
+      88,     0,   149,     0,   150,   151,   152,   153,   154,   155,
+     156,   157,   158,   159,   160,   161,     0,   162,   163,   164,
+     165,     0,     0,     0,     0,     0,     0,     0,     0,   166,
+     167,   168,   169,   170,   171,   172,   173,   174,     0,   176,
+       0,   178,    89,   179,     0,    90,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,    91,     0,     0,     0,     0,
+      92
 };
 
 static const yytype_int16 yycheck[] =
 {
        3,     4,     5,     6,     7,     8,     9,    10,    11,    17,
-      54,    55,    20,    47,    48,     7,     8,     7,     8,    21,
-      17,    47,    48,    20,     0,    46,    51,    51,    36,    37,
-       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
-      37,    50,    15,    49,    49,    49,    -1,    -1,    49,    -1,
-      50,    50,    50,    -1,    -1,    58,    59,    60,    61,    62,
-      63,    64,    65,    66,    67,    38,    39,    40,    41,    42,
-      43,    44,    45,    -1,    -1,    -1,    -1,    -1,    51,    -1,
-      53,    -1,    -1,    -1,    -1,     4,     5,     6,     7,     8,
-       9,    10,    11,    12,    13,    14,    15,    16,    -1,    -1,
-      -1,   104,   105,   106,   107,    -1,    -1,    -1,    -1,    72,
-      -1,    -1,    -1,    -1,    -1,    78,    -1,    -1,    -1,    82,
-      83,    -1,    -1,    86,    87,   128,   129,   130,   131,    92,
-      93,    94,    95,    52,    -1,    54,    99,   100,   101,   102,
-     103,    -1,    -1,    -1,    -1,    -1,   109,   110,    -1,    17,
-     113,   114,    20,    -1,   117,   118,   119,   120,   121,   122,
-      -1,    -1,    30,    -1,    -1,    -1,    -1,    35,    -1,   132,
-      -1,   134,   135,   136,   137,   138,   139,   140,   141,   142,
-     143,   144,   145,    -1,   147,   148,   149,   150,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,   159,   160,   161,   162,
-     163,   164,   165,   166,   167,    -1,   169,    -1,   171,    17,
-     173,    -1,    20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-      -1,    -1,    30,    -1,    -1,    -1,    -1,    35
+      17,    21,    20,    20,    55,    56,    48,    49,     7,     8,
+       7,     8,    48,    49,    53,     0,    50,    52,    36,    37,
+      37,    52,     3,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,    47,    -1,    15,    51,    50,    -1,    50,    50,
+      -1,    51,    51,    51,    -1,    -1,    -1,    60,    61,    62,
+      63,    64,    65,    66,    67,    68,    69,    38,    39,    40,
+      41,    42,    43,    44,    45,    46,    -1,    -1,    -1,    -1,
+      -1,    52,    -1,    54,    -1,    -1,    -1,     4,     5,     6,
+       7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+      -1,    -1,    -1,    -1,   107,   108,   109,   110,    -1,    -1,
+      -1,    74,    -1,    -1,    -1,    -1,    -1,    80,    -1,    -1,
+      -1,    -1,    85,    86,    -1,    -1,    89,    90,   131,   132,
+     133,   134,    95,    96,    97,    98,    53,    -1,    55,   102,
+     103,   104,   105,   106,    -1,    -1,    -1,    -1,    -1,   112,
+     113,    -1,    17,   116,   117,    20,    -1,   120,   121,   122,
+     123,   124,   125,    -1,    -1,    30,    -1,    -1,    -1,    -1,
+      35,    -1,   135,    -1,   137,   138,   139,   140,   141,   142,
+     143,   144,   145,   146,   147,   148,    -1,   150,   151,   152,
+     153,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,   162,
+     163,   164,   165,   166,   167,   168,   169,   170,    -1,   172,
+      -1,   174,    17,   176,    -1,    20,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    30,    -1,    -1,    -1,    -1,
+      35
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -903,36 +910,37 @@ static const yytype_int8 yystos[] =
 {
        0,     3,     4,     5,     6,     7,     8,     9,    10,    11,
       12,    15,    38,    39,    40,    41,    42,    43,    44,    45,
-      51,    53,    58,    59,    60,    61,    62,    63,    64,    65,
+      46,    52,    54,    59,    60,    61,    62,    63,    64,    65,
       66,    67,    68,    69,    70,    71,    72,    73,    74,    75,
-      76,    77,    78,     4,     5,     6,     7,     8,     9,    10,
-      11,    12,    13,    14,    15,    16,    52,    54,    80,    80,
-      80,    80,    80,    80,    80,    80,    80,    80,    17,    20,
-      36,    37,    21,    17,    20,    37,    54,    55,    79,     0,
-      51,    51,    17,    20,    30,    35,    17,    20,    30,    35,
-      47,    48,     7,     8,     7,     8,    46,    47,    48,    80,
-      80,    80,    80,    80,    80,    80,    80,    80,    80,    79,
-      79,    79,    79,    49,    49,    79,    79,    49,    49,    79,
-      79,    79,    79,    79,    79,    79,    79,    79,    80,    80,
-      80,    80,    79,    79,    79,    79,    79,    79,    79,    79,
-      79,    79,    80,    80,    80,    80,    79,    79,    79,    79,
-      79,    79,    79,    79,    79,    79,    79,    79,    79,    79,
-      79,    79,    79,    79,    79,    79,    79,    79,    79,    79,
-      79,    79,    50,    79,    50,    79,    79,    50,    50
+      76,    77,    78,    79,    80,     4,     5,     6,     7,     8,
+       9,    10,    11,    12,    13,    14,    15,    16,    53,    55,
+      82,    82,    82,    82,    82,    82,    82,    82,    82,    82,
+      17,    20,    36,    37,    21,    17,    20,    37,    55,    56,
+      81,    53,     0,    52,    52,    17,    20,    30,    35,    17,
+      20,    30,    35,    48,    49,     7,     8,     7,     8,    47,
+      48,    49,    82,    82,    82,    82,    82,    82,    82,    82,
+      82,    82,    81,    81,    81,    81,    50,    50,    81,    81,
+      50,    50,    81,    81,    81,    81,    81,    81,    81,    81,
+      81,    82,    82,    82,    82,    81,    81,    81,    81,    81,
+      81,    81,    81,    81,    81,    82,    82,    82,    82,    81,
+      81,    81,    81,    81,    81,    81,    81,    81,    81,    81,
+      81,    81,    81,    81,    81,    81,    81,    81,    81,    81,
+      81,    81,    81,    81,    81,    51,    81,    51,    81,    81,
+      51,    51
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    57,    58,    58,    58,    58,    58,    59,    59,    59,
-      59,    59,    59,    59,    59,    59,    59,    60,    60,    60,
-      60,    60,    60,    60,    60,    61,    62,    63,    64,    65,
-      65,    65,    65,    65,    65,    66,    66,    66,    66,    66,
-      66,    67,    68,    69,    70,    71,    72,    73,    73,    73,
-      73,    73,    73,    74,    74,    74,    75,    75,    75,    76,
-      76,    77,    77,    77,    77,    77,    78,    78,    79,    79,
-      80,    80,    80,    80,    80,    80,    80,    80,    80,    80,
-      80,    80,    80,    80,    80
+       0,    58,    59,    59,    59,    59,    59,    60,    60,    60,
+      60,    60,    60,    60,    60,    60,    60,    61,    61,    61,
+      61,    61,    61,    61,    61,    61,    62,    63,    64,    65,
+      66,    66,    66,    66,    66,    66,    67,    67,    67,    67,
+      67,    67,    68,    69,    70,    71,    72,    73,    74,    75,
+      75,    75,    75,    75,    75,    76,    76,    76,    77,    77,
+      77,    78,    78,    79,    79,    79,    79,    79,    80,    80,
+      81,    81,    82,    82,    82,    82,    82,    82,    82,    82,
+      82,    82,    82,    82,    82,    82,    82
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -940,13 +948,13 @@ static const yytype_int8 yyr2[] =
 {
        0,     2,     2,     2,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     4,     4,     4,     3,     3,
-       4,     3,     3,    11,     9,     3,     4,     3,     3,    11,
-       9,     6,     6,     6,     6,     1,     1,     2,     2,     2,
-       2,     2,     2,     1,     5,     5,     5,     5,     5,     1,
-       2,     2,     2,     2,     2,     2,     3,     4,     1,     1,
+       1,     1,     1,     1,     1,     1,     4,     4,     4,     3,
+       3,     4,     3,     3,    11,     9,     3,     4,     3,     3,
+      11,     9,     6,     6,     6,     6,     2,     1,     1,     2,
+       2,     2,     2,     2,     2,     1,     5,     5,     5,     5,
+       5,     1,     2,     2,     2,     2,     2,     2,     3,     4,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1
+       1,     1,     1,     1,     1,     1,     1
 };
 
 
@@ -1794,274 +1802,282 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* line: component EOL  */
-#line 250 "sp.y"
+#line 252 "sp.y"
                   { yylineno++; return 0; }
-#line 1800 "parser.cpp"
+#line 1808 "parser.cpp"
     break;
 
   case 3: /* line: command EOL  */
-#line 251 "sp.y"
+#line 253 "sp.y"
                   { yylineno++; return 0; }
-#line 1806 "parser.cpp"
+#line 1814 "parser.cpp"
     break;
 
   case 4: /* line: COMMENTLINE  */
-#line 252 "sp.y"
+#line 254 "sp.y"
                   { yylineno++; console->log(std::format("[SpParser] commentline: {}", (yyvsp[0].str))); return 0; }
-#line 1812 "parser.cpp"
+#line 1820 "parser.cpp"
     break;
 
   case 5: /* line: EOL  */
-#line 253 "sp.y"
+#line 255 "sp.y"
           { yylineno++; return 0; }
-#line 1818 "parser.cpp"
+#line 1826 "parser.cpp"
     break;
 
   case 6: /* line: DOCEOF  */
-#line 254 "sp.y"
+#line 256 "sp.y"
              { return -255; }
-#line 1824 "parser.cpp"
+#line 1832 "parser.cpp"
     break;
 
-  case 25: /* resistor: P_RESISTOR node node value  */
-#line 283 "sp.y"
+  case 26: /* resistor: P_RESISTOR node node value  */
+#line 286 "sp.y"
     { ParseResistor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1830 "parser.cpp"
+#line 1838 "parser.cpp"
     break;
 
-  case 26: /* capacitor: P_CAPACITOR node node value  */
-#line 288 "sp.y"
+  case 27: /* capacitor: P_CAPACITOR node node value  */
+#line 291 "sp.y"
     { ParseCapacitor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1836 "parser.cpp"
+#line 1844 "parser.cpp"
     break;
 
-  case 27: /* inductor: P_INDUCTOR node node value  */
-#line 293 "sp.y"
+  case 28: /* inductor: P_INDUCTOR node node value  */
+#line 296 "sp.y"
     { ParseInductor((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value)); }
-#line 1842 "parser.cpp"
+#line 1850 "parser.cpp"
     break;
 
-  case 28: /* diode: P_DIODE node node  */
-#line 298 "sp.y"
+  case 29: /* diode: P_DIODE node node  */
+#line 301 "sp.y"
     { ParseDiode((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str)); }
-#line 1848 "parser.cpp"
-    break;
-
-  case 29: /* vsource: P_VSOURCE node node  */
-#line 303 "sp.y"
-    {
-        ParseVSource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
-    }
 #line 1856 "parser.cpp"
     break;
 
-  case 30: /* vsource: P_VSOURCE node node value  */
-#line 308 "sp.y"
+  case 30: /* vsource: P_VSOURCE node node  */
+#line 306 "sp.y"
     {
-        ParseVSource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+        ParseVSource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
     }
 #line 1864 "parser.cpp"
     break;
 
-  case 31: /* vsource: vsource RK_DC value  */
-#line 313 "sp.y"
+  case 31: /* vsource: P_VSOURCE node node value  */
+#line 311 "sp.y"
     {
-        d_VSource->DC_Value = (yyvsp[0].value);
+        ParseVSource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
 #line 1872 "parser.cpp"
     break;
 
-  case 32: /* vsource: vsource RK_AC value  */
-#line 318 "sp.y"
+  case 32: /* vsource: vsource RK_DC value  */
+#line 316 "sp.y"
     {
-        d_VSource->AC_Mag = (yyvsp[0].value);
+        d_VSource->DC_Value = (yyvsp[0].value);
     }
 #line 1880 "parser.cpp"
     break;
 
-  case 33: /* vsource: vsource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
-#line 323 "sp.y"
+  case 33: /* vsource: vsource RK_AC value  */
+#line 321 "sp.y"
+    {
+        d_VSource->AC_Mag = (yyvsp[0].value);
+    }
+#line 1888 "parser.cpp"
+    break;
+
+  case 34: /* vsource: vsource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
+#line 326 "sp.y"
     {
         d_VSource->pulse = new Pulse((yyvsp[-7].value), (yyvsp[-6].value), (yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] PULSE detected!"));
     }
-#line 1889 "parser.cpp"
+#line 1897 "parser.cpp"
     break;
 
-  case 34: /* vsource: vsource RK_SIN LBRACKET value value value value value RBRACKET  */
-#line 329 "sp.y"
+  case 35: /* vsource: vsource RK_SIN LBRACKET value value value value value RBRACKET  */
+#line 332 "sp.y"
     {
         d_VSource->sin = new Sinusoid((yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
     }
-#line 1898 "parser.cpp"
-    break;
-
-  case 35: /* isource: P_ISOURCE node node  */
-#line 337 "sp.y"
-    {
-        ParseISource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
-    }
 #line 1906 "parser.cpp"
     break;
 
-  case 36: /* isource: P_ISOURCE node node value  */
-#line 342 "sp.y"
+  case 36: /* isource: P_ISOURCE node node  */
+#line 340 "sp.y"
     {
-        ParseISource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+        ParseISource((yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].str), 0);
     }
 #line 1914 "parser.cpp"
     break;
 
-  case 37: /* isource: isource RK_DC value  */
-#line 347 "sp.y"
+  case 37: /* isource: P_ISOURCE node node value  */
+#line 345 "sp.y"
     {
-        d_ISource->DC_Value = (yyvsp[0].value);
+        ParseISource((yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
 #line 1922 "parser.cpp"
     break;
 
-  case 38: /* isource: isource RK_AC value  */
-#line 352 "sp.y"
+  case 38: /* isource: isource RK_DC value  */
+#line 350 "sp.y"
     {
-        d_ISource->AC_Mag = (yyvsp[0].value);
+        d_ISource->DC_Value = (yyvsp[0].value);
     }
 #line 1930 "parser.cpp"
     break;
 
-  case 39: /* isource: isource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
-#line 357 "sp.y"
+  case 39: /* isource: isource RK_AC value  */
+#line 355 "sp.y"
+    {
+        d_ISource->AC_Mag = (yyvsp[0].value);
+    }
+#line 1938 "parser.cpp"
+    break;
+
+  case 40: /* isource: isource RK_PULSE LBRACKET value value value value value value value RBRACKET  */
+#line 360 "sp.y"
     {
         d_ISource->pulse = new Pulse((yyvsp[-7].value), (yyvsp[-6].value), (yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] PULSE detected!"));
     }
-#line 1939 "parser.cpp"
+#line 1947 "parser.cpp"
     break;
 
-  case 40: /* isource: isource RK_SIN LBRACKET value value value value value RBRACKET  */
-#line 363 "sp.y"
+  case 41: /* isource: isource RK_SIN LBRACKET value value value value value RBRACKET  */
+#line 366 "sp.y"
     {
         d_ISource->sin = new Sinusoid((yyvsp[-5].value), (yyvsp[-4].value), (yyvsp[-3].value), (yyvsp[-2].value), (yyvsp[-1].value));
         console->log(std::format("[SpParser] [Command] Sinusoid detected!"));
     }
-#line 1948 "parser.cpp"
-    break;
-
-  case 41: /* vccs: P_VCCS node node node node value  */
-#line 371 "sp.y"
-    {
-        ParseVCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
-    }
 #line 1956 "parser.cpp"
     break;
 
-  case 42: /* vcvs: P_VCVS node node node node value  */
-#line 378 "sp.y"
+  case 42: /* vccs: P_VCCS node node node node value  */
+#line 374 "sp.y"
     {
-        ParseVCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+        ParseVCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
 #line 1964 "parser.cpp"
     break;
 
-  case 43: /* cccs: P_CCCS node node node node value  */
-#line 385 "sp.y"
+  case 43: /* vcvs: P_VCVS node node node node value  */
+#line 381 "sp.y"
     {
-        ParseCCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+        ParseVCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
 #line 1972 "parser.cpp"
     break;
 
-  case 44: /* ccvs: P_CCVS node node node node value  */
-#line 392 "sp.y"
+  case 44: /* cccs: P_CCCS node node node node value  */
+#line 388 "sp.y"
     {
-        ParseCCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+        ParseCCCS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
     }
 #line 1980 "parser.cpp"
     break;
 
-  case 45: /* op: CMD_OP  */
-#line 400 "sp.y"
+  case 45: /* ccvs: P_CCVS node node node node value  */
+#line 395 "sp.y"
+    {
+        ParseCCVS((yyvsp[-5].str), (yyvsp[-4].str), (yyvsp[-3].str), (yyvsp[-2].str), (yyvsp[-1].str), (yyvsp[0].value));
+    }
+#line 1988 "parser.cpp"
+    break;
+
+  case 46: /* title: CMD_TITLE STRING  */
+#line 402 "sp.y"
+    {
+        circuit->title = (yyvsp[0].str);
+    }
+#line 1996 "parser.cpp"
+    break;
+
+  case 47: /* op: CMD_OP  */
+#line 409 "sp.y"
     {
         circuit->command_OP.enabled = true;
         console->log(std::format("[SpParser] [Command] .OP detected!"));
     }
-#line 1989 "parser.cpp"
+#line 2005 "parser.cpp"
     break;
 
-  case 46: /* end: CMD_END  */
-#line 408 "sp.y"
+  case 48: /* end: CMD_END  */
+#line 417 "sp.y"
     {
         console->log(std::format("[SpParser] [Command] .end detected!"));
         return -255;
     }
-#line 1998 "parser.cpp"
+#line 2014 "parser.cpp"
     break;
 
-  case 47: /* print: CMD_PRINT RK_DC  */
-#line 415 "sp.y"
-                    { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: DC"); }
-#line 2004 "parser.cpp"
-    break;
-
-  case 48: /* print: CMD_PRINT RK_AC  */
-#line 416 "sp.y"
-                      { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: AC"); }
-#line 2010 "parser.cpp"
-    break;
-
-  case 49: /* print: CMD_PRINT RK_TRAN  */
-#line 417 "sp.y"
-                        { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); }
-#line 2016 "parser.cpp"
-    break;
-
-  case 50: /* print: CMD_PRINT RK_OP  */
-#line 418 "sp.y"
-                      { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: OP"); }
-#line 2022 "parser.cpp"
-    break;
-
-  case 51: /* print: print VAR_I  */
-#line 419 "sp.y"
-                  { console->log(std::format("[SpParser] print current: {}\n", (yyvsp[0].str))); }
-#line 2028 "parser.cpp"
-    break;
-
-  case 52: /* print: print VAR_V  */
-#line 420 "sp.y"
-                  { console->log(std::format("[SpParser] print voltage: {}\n", (yyvsp[0].str))); }
-#line 2034 "parser.cpp"
-    break;
-
-  case 53: /* dc: CMD_DC  */
+  case 49: /* print: CMD_PRINT RK_DC  */
 #line 424 "sp.y"
+                    { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: DC"); }
+#line 2020 "parser.cpp"
+    break;
+
+  case 50: /* print: CMD_PRINT RK_AC  */
+#line 425 "sp.y"
+                      { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: AC"); }
+#line 2026 "parser.cpp"
+    break;
+
+  case 51: /* print: CMD_PRINT RK_TRAN  */
+#line 426 "sp.y"
+                        { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); }
+#line 2032 "parser.cpp"
+    break;
+
+  case 52: /* print: CMD_PRINT RK_OP  */
+#line 427 "sp.y"
+                      { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: OP"); }
+#line 2038 "parser.cpp"
+    break;
+
+  case 53: /* print: print VAR_I  */
+#line 428 "sp.y"
+                  { console->log(std::format("[SpParser] print current: {}\n", (yyvsp[0].str))); }
+#line 2044 "parser.cpp"
+    break;
+
+  case 54: /* print: print VAR_V  */
+#line 429 "sp.y"
+                  { console->log(std::format("[SpParser] print voltage: {}\n", (yyvsp[0].str))); }
+#line 2050 "parser.cpp"
+    break;
+
+  case 55: /* dc: CMD_DC  */
+#line 433 "sp.y"
            { 
         circuit->command_DC.enabled = true;
         console->log("[SpParser] [Command] .dc detected!");
     }
-#line 2043 "parser.cpp"
+#line 2059 "parser.cpp"
     break;
 
-  case 54: /* dc: dc P_ISOURCE value value value  */
-#line 428 "sp.y"
+  case 56: /* dc: dc P_ISOURCE value value value  */
+#line 437 "sp.y"
                                      { 
         circuit->command_DC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] dc current scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2052 "parser.cpp"
+#line 2068 "parser.cpp"
     break;
 
-  case 55: /* dc: dc P_VSOURCE value value value  */
-#line 432 "sp.y"
+  case 57: /* dc: dc P_VSOURCE value value value  */
+#line 441 "sp.y"
                                      { 
         circuit->command_DC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] dc voltage scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2061 "parser.cpp"
+#line 2077 "parser.cpp"
     break;
 
-  case 56: /* ac: CMD_AC RK_DEC value value value  */
-#line 439 "sp.y"
+  case 58: /* ac: CMD_AC RK_DEC value value value  */
+#line 448 "sp.y"
                                     { 
         circuit->command_AC.enabled = true;
         circuit->command_AC.type = DEC;
@@ -2070,108 +2086,108 @@ yyreduce:
         circuit->command_AC.fstop = (yyvsp[0].value);
         console->log("[SpParser] [Command] .ac detected!");
     }
-#line 2074 "parser.cpp"
+#line 2090 "parser.cpp"
     break;
 
-  case 57: /* ac: ac P_ISOURCE value value value  */
-#line 447 "sp.y"
+  case 59: /* ac: ac P_ISOURCE value value value  */
+#line 456 "sp.y"
                                      { 
         circuit->command_AC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] ac current scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2083 "parser.cpp"
+#line 2099 "parser.cpp"
     break;
 
-  case 58: /* ac: ac P_VSOURCE value value value  */
-#line 451 "sp.y"
+  case 60: /* ac: ac P_VSOURCE value value value  */
+#line 460 "sp.y"
                                      { 
         circuit->command_AC.sweepOptions.push_back(SweepOption((yyvsp[-3].str), (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
         console->log(std::format("[SpParser] ac voltage scan: from {:.3e} to {:.3e} step {:.3e}\n", (yyvsp[-2].value), (yyvsp[-1].value), (yyvsp[0].value)));
     }
-#line 2092 "parser.cpp"
-    break;
-
-  case 59: /* options: CMD_OPTIONS  */
-#line 459 "sp.y"
-    {
-        console->log("[SpParser] [Command] .options detected!");
-    }
-#line 2100 "parser.cpp"
-    break;
-
-  case 60: /* options: options OPTIONS_ITEM  */
-#line 463 "sp.y"
-    {
-        parseOption((yyvsp[0].str));
-    }
 #line 2108 "parser.cpp"
     break;
 
-  case 61: /* plot: CMD_PLOT RK_DC  */
-#line 469 "sp.y"
+  case 61: /* options: CMD_OPTIONS  */
+#line 468 "sp.y"
+    {
+        console->log("[SpParser] [Command] .options detected!");
+    }
+#line 2116 "parser.cpp"
+    break;
+
+  case 62: /* options: options OPTIONS_ITEM  */
+#line 472 "sp.y"
+    {
+        parseOption((yyvsp[0].str));
+    }
+#line 2124 "parser.cpp"
+    break;
+
+  case 63: /* plot: CMD_PLOT RK_DC  */
+#line 478 "sp.y"
                    { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: DC"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_DC;
     }
-#line 2118 "parser.cpp"
+#line 2134 "parser.cpp"
     break;
 
-  case 62: /* plot: CMD_PLOT RK_AC  */
-#line 474 "sp.y"
+  case 64: /* plot: CMD_PLOT RK_AC  */
+#line 483 "sp.y"
                      { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: AC"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_AC;
     }
-#line 2128 "parser.cpp"
+#line 2144 "parser.cpp"
     break;
 
-  case 63: /* plot: CMD_PLOT RK_TRAN  */
-#line 479 "sp.y"
+  case 65: /* plot: CMD_PLOT RK_TRAN  */
+#line 488 "sp.y"
                        { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: TRAN"); 
         circuit->command_PLOT.enabled = true;
         circuit->command_PLOT.type = PLOT_TRAN;
     }
-#line 2138 "parser.cpp"
+#line 2154 "parser.cpp"
     break;
 
-  case 64: /* plot: plot VAR_I  */
-#line 484 "sp.y"
+  case 66: /* plot: plot VAR_I  */
+#line 493 "sp.y"
                  { 
         console->log(std::format("[SpParser] plot current: {}\n", (yyvsp[0].str))); 
         std::string node = (yyvsp[0].str);
 
         circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "I"));
     }
-#line 2149 "parser.cpp"
+#line 2165 "parser.cpp"
     break;
 
-  case 65: /* plot: plot VAR_V  */
-#line 490 "sp.y"
+  case 67: /* plot: plot VAR_V  */
+#line 499 "sp.y"
                  { 
         console->log(std::format("[SpParser] plot voltage: {}\n", (yyvsp[0].str))); 
         std::string node = (yyvsp[0].str);
 
         circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "V"));
     }
-#line 2160 "parser.cpp"
+#line 2176 "parser.cpp"
     break;
 
-  case 66: /* tran: CMD_TRAN value value  */
-#line 499 "sp.y"
+  case 68: /* tran: CMD_TRAN value value  */
+#line 508 "sp.y"
                          { 
         circuit->command_TRAN.enabled = true;
         circuit->command_TRAN.tstep = (yyvsp[-1].value);
         circuit->command_TRAN.tstop = (yyvsp[0].value);
         console->log("[SpParser] [Command] .tran detected!");
     }
-#line 2171 "parser.cpp"
+#line 2187 "parser.cpp"
     break;
 
-  case 67: /* tran: CMD_TRAN value value value  */
-#line 506 "sp.y"
+  case 69: /* tran: CMD_TRAN value value value  */
+#line 515 "sp.y"
                                { 
         circuit->command_TRAN.enabled = true;
         circuit->command_TRAN.tstep = (yyvsp[-2].value);
@@ -2179,120 +2195,120 @@ yyreduce:
         circuit->command_TRAN.tstart = (yyvsp[0].value);
         console->log("[SpParser] [Command] .tran detected!");
     }
-#line 2183 "parser.cpp"
-    break;
-
-  case 68: /* value: REAL  */
-#line 517 "sp.y"
-    {
-        (yyval.value) = (yyvsp[0].value);
-    }
-#line 2191 "parser.cpp"
-    break;
-
-  case 69: /* value: INTEGER  */
-#line 522 "sp.y"
-    {
-        (yyval.value) = (yyvsp[0].num);
-    }
 #line 2199 "parser.cpp"
     break;
 
-  case 70: /* node: STRING  */
-#line 528 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2205 "parser.cpp"
+  case 70: /* value: REAL  */
+#line 526 "sp.y"
+    {
+        (yyval.value) = (yyvsp[0].value);
+    }
+#line 2207 "parser.cpp"
     break;
 
-  case 71: /* node: P_RESISTOR  */
-#line 529 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2211 "parser.cpp"
-    break;
-
-  case 72: /* node: P_CAPACITOR  */
-#line 530 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2217 "parser.cpp"
-    break;
-
-  case 73: /* node: P_INDUCTOR  */
+  case 71: /* value: INTEGER  */
 #line 531 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2223 "parser.cpp"
+    {
+        (yyval.value) = (yyvsp[0].num);
+    }
+#line 2215 "parser.cpp"
     break;
 
-  case 74: /* node: P_ISOURCE  */
-#line 532 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2229 "parser.cpp"
-    break;
-
-  case 75: /* node: P_VSOURCE  */
-#line 533 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2235 "parser.cpp"
-    break;
-
-  case 76: /* node: P_VCCS  */
-#line 534 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2241 "parser.cpp"
-    break;
-
-  case 77: /* node: P_CCCS  */
-#line 535 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2247 "parser.cpp"
-    break;
-
-  case 78: /* node: P_CCVS  */
-#line 536 "sp.y"
-                    { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2253 "parser.cpp"
-    break;
-
-  case 79: /* node: P_VCVS  */
+  case 72: /* node: STRING  */
 #line 537 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2259 "parser.cpp"
+#line 2221 "parser.cpp"
     break;
 
-  case 80: /* node: P_OPAMP  */
+  case 73: /* node: P_RESISTOR  */
 #line 538 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2265 "parser.cpp"
+#line 2227 "parser.cpp"
     break;
 
-  case 81: /* node: P_SWITCH  */
+  case 74: /* node: P_CAPACITOR  */
 #line 539 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2271 "parser.cpp"
+#line 2233 "parser.cpp"
     break;
 
-  case 82: /* node: P_DIODE  */
+  case 75: /* node: P_INDUCTOR  */
 #line 540 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2277 "parser.cpp"
+#line 2239 "parser.cpp"
     break;
 
-  case 83: /* node: P_MOSFET  */
+  case 76: /* node: P_ISOURCE  */
 #line 541 "sp.y"
                     { (yyval.str) = strdup((yyvsp[0].str)); }
-#line 2283 "parser.cpp"
+#line 2245 "parser.cpp"
     break;
 
-  case 84: /* node: INTEGER  */
+  case 77: /* node: P_VSOURCE  */
+#line 542 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2251 "parser.cpp"
+    break;
+
+  case 78: /* node: P_VCCS  */
 #line 543 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2257 "parser.cpp"
+    break;
+
+  case 79: /* node: P_CCCS  */
+#line 544 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2263 "parser.cpp"
+    break;
+
+  case 80: /* node: P_CCVS  */
+#line 545 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2269 "parser.cpp"
+    break;
+
+  case 81: /* node: P_VCVS  */
+#line 546 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2275 "parser.cpp"
+    break;
+
+  case 82: /* node: P_OPAMP  */
+#line 547 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2281 "parser.cpp"
+    break;
+
+  case 83: /* node: P_SWITCH  */
+#line 548 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2287 "parser.cpp"
+    break;
+
+  case 84: /* node: P_DIODE  */
+#line 549 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2293 "parser.cpp"
+    break;
+
+  case 85: /* node: P_MOSFET  */
+#line 550 "sp.y"
+                    { (yyval.str) = strdup((yyvsp[0].str)); }
+#line 2299 "parser.cpp"
+    break;
+
+  case 86: /* node: INTEGER  */
+#line 552 "sp.y"
     {
         (yyval.str) = new char[32];
         sprintf((yyval.str), "%d", (yyvsp[0].num));
     }
-#line 2292 "parser.cpp"
+#line 2308 "parser.cpp"
     break;
 
 
-#line 2296 "parser.cpp"
+#line 2312 "parser.cpp"
 
       default: break;
     }
@@ -2521,5 +2537,5 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 549 "sp.y"
+#line 558 "sp.y"
 
