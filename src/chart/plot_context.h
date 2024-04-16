@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <climits>
 #include <iostream>
 #include <sstream>
 
@@ -15,4 +16,11 @@ public:
     std::string axisZTitle;
     bool useLogAxis;
     bool useExtraAxis;
+    double min;
+    double max;
+
+    PlotContext() {
+        min = INT_MAX;
+        max = INT_MIN;
+    }
 };

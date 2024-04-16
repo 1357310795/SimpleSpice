@@ -34,14 +34,18 @@ HEADERS += \
     src/calc/analyze_dc.h \
     src/calc/analyze_entry.h \
     src/calc/analyze_manager.hpp \
+    src/calc/analyze_op.h \
     src/calc/analyze_tran.h \
+    src/calc/iteration_context.hpp \
     src/chart/mychart.h \
     src/chart/plot_context.h \
     src/chart/plot_manager.h \
+    src/chart/print_manager.h \
     src/circuit/circuit.h \
     src/circuit/circuit_node.h \
     src/cmds/ac_dc.hpp \
     src/cmds/option.hpp \
+    src/cmds/print.hpp \
     src/cmds/pulse.hpp \
     src/console/myconsole.h \
     src/devices/item/capacitor.h \
@@ -50,6 +54,7 @@ HEADERS += \
     src/devices/item/diode.h \
     src/devices/item/inductor.h \
     src/devices/item/isource.h \
+    src/devices/item/mosfet.h \
     src/devices/item/resistor.h \
     src/devices/item/vccs.h \
     src/devices/item/vcvs.h \
@@ -76,10 +81,12 @@ SOURCES += src/main.cpp \
            src/calc/analyze_ac.cpp \
            src/calc/analyze_context.cpp \
            src/calc/analyze_dc.cpp \
+           src/calc/analyze_op.cpp \
            src/calc/analyze_tran.cpp \
            src/chart/mychart.cpp \
            src/chart/plot_context.cpp \
            src/chart/plot_manager.cpp \
+           src/chart/print_manager.cpp \
            src/circuit/circuit.cpp \
            src/console/myconsole.cpp \
            src/devices/item/capacitor.cpp \
@@ -88,6 +95,7 @@ SOURCES += src/main.cpp \
            src/devices/item/diode.cpp \
            src/devices/item/inductor.cpp \
            src/devices/item/isource.cpp \
+           src/devices/item/mosfet.cpp \
            src/devices/item/resistor.cpp \
            src/devices/item/vccs.cpp \
            src/devices/item/vcvs.cpp \

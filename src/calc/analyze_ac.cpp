@@ -16,6 +16,7 @@
 #include "devices/source_device.h"
 #include "calc/analyze_ac.h"
 #include "chart/plot_manager.h"
+#include "chart/print_manager.h"
 
 AnalyzeAC::AnalyzeAC(Circuit* circuit, std::vector<CircuitNode>& nodes, int nodeCount)
     : circuit(circuit), nodes(nodes), nodeCount(nodeCount) {}
@@ -59,18 +60,23 @@ void AnalyzeAC::SolveAC()
         results.push_back(entry);
     }
 
-    console->log("[SpParser] Result:");
-    for(auto& entry: results)
+    // console->log("[SpParser] Result:");
+    // for(auto& entry: results)
+    // {
+    //     for(int i = 0; i < nodeCount - 1; i++)
+    //     {
+    //         oss<<nodes[i+1].prefix<<'('<<nodes[i+1].nodeName<<')'<<'\t'<<'='<<'\t'<<entry->resultc(i);
+    //         console->log(oss.str()); oss = std::ostringstream();
+    //     }
+    // }
+    if (circuit->command_PRINTs.size() > 0)
     {
-        for(int i = 0; i < nodeCount - 1; i++)
-        {
-            oss<<nodes[i+1].prefix<<'('<<nodes[i+1].nodeName<<')'<<'\t'<<'='<<'\t'<<entry->resultc(i);
-            console->log(oss.str()); oss = std::ostringstream();
-        }
+        PrintManager::Print(context->nodeCount - 1, context->nodes, results);
     }
-    if (circuit->command_PLOT.enabled)
+    
+    if (circuit->command_PLOTs.size() > 0)
     {
-        PlotManager::PlotAC(context->nodeCount - 1, context->nodes, results);
+        PlotManager::Plot(context->nodeCount - 1, context->nodes, results);
     }
     delete context;
 }

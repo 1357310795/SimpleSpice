@@ -11,9 +11,10 @@
 #include "devices/nonlinear_device.h"
 #include "calc/analyze_context.h"
 #include "devices/item/diode.h"
+#include "calc/iteration_context.hpp"
 
-D_Diode::D_Diode(std::string name, std::string n1, std::string n2) 
-    : BaseDevice(name), NonlinearDevice(), N1(n1), N2(n2) {}
+D_Diode::D_Diode(std::string name, std::string n1, std::string n2, std::string model) 
+    : BaseDevice(name), NonlinearDevice(), N1(n1), N2(n2), Model(model) {}
 
 std::string D_Diode::getDeviceType() {
     return "Diode";
@@ -48,15 +49,17 @@ void D_Diode::appendStamp(
 }
 
 void D_Diode::appendStampDC(AnalyzeContext* context) {
-    if (context->IterVoltages[this->Name]->back() < 0)
+    auto baseContext = context->IterContexts[this->Name]->back();
+    auto iterContext = dynamic_cast<DiodeIterationContext*>(baseContext);
+    if (iterContext->iterVoltage < 0)
         return;
     this->appendStamp(
         context->nodeCount, 
         context->mat, 
         context->rhs, 
         context->nodes,
-        context->IterVoltages[this->Name]->back(),
-        context->IterCurrents[this->Name]->back()
+        iterContext->iterVoltage,
+        iterContext->iterCurrent
     );
 }
 
@@ -94,14 +97,35 @@ double D_Diode::getLastVoltage(AnalyzeContext* context) {
         int index2 = std::distance(nodes.begin(), it2);
         value2 = (*result)[index2];
     }
-    
-    return value1 - value2;
+    double vk1 = value1 - value2;
+    if (vk1 > 0.1)
+    {
+        auto baseContext = context->IterContexts[this->Name]->back();
+        auto iterContext = dynamic_cast<DiodeIterationContext*>(baseContext);
+        double vk = iterContext->iterVoltage;
+        double vlimk1 = vk + (double)1/(double)40 * std::log(1 + (vk1-vk)*40);
+        return vlimk1;
+    }
+    return vk1;
 } 
 
-double D_Diode::getLastCurrent(AnalyzeContext* context) {
+BaseIterationContext* D_Diode::getLastContext(AnalyzeContext* context) {
     double v = getLastVoltage(context);
-    return v<=0 ? 0 : (std::exp(40*v) - 1);
+    double i = v<=0 ? 0 : (std::exp(40*v) - 1);
+    return new DiodeIterationContext(Name, v, i);
 } 
+
+BaseIterationContext* D_Diode::getDefaultIterationContext() {
+    return new DiodeIterationContext(Name, 0, 0);
+} 
+
+double D_Diode::checkConvergence(AnalyzeContext* context) {
+    auto it = context->IterContexts[this->Name]->end();
+    auto iterContext1 = dynamic_cast<DiodeIterationContext*>(*(it-1));
+    auto iterContext2 = dynamic_cast<DiodeIterationContext*>(*(it-2));
+
+    return std::abs(iterContext1->iterVoltage - iterContext2->iterVoltage);
+}
 
 void D_Diode::checkNode(
     std::ostringstream &oss,

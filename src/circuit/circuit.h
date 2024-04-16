@@ -7,6 +7,7 @@
 #include "cmds/option.hpp"
 #include "cmds/tran.hpp"
 #include "cmds/plot.hpp"
+#include "cmds/print.hpp"
 
 class BaseDevice;
 
@@ -26,7 +27,8 @@ public:
     Command_OP command_OP;
     Command_OPTIONS command_OPTIONS;
     Command_TRAN command_TRAN;
-    Command_PLOT command_PLOT;
+    std::vector<Command_PLOT*> command_PLOTs;
+    std::vector<Command_PRINT*> command_PRINTs;
 
     ~Circuit();
 };

@@ -10,6 +10,7 @@
 #include "parser/scanner.hpp"
 #include "console/myconsole.h"
 #include "cmds/plot.hpp"
+#include "cmds/print.hpp"
 #include "cmds/pulse.hpp"
 #include "cmds/sinusoid.hpp"
 #include "circuit/circuit_node.h"
@@ -25,6 +26,7 @@
 #include "devices/item/ccvs.h"
 #include "devices/item/cccs.h"
 #include "devices/item/diode.h"
+#include "devices/item/mosfet.h"
 
 void yyerror (char const *s) {
    fprintf (stderr, "[SpParser] error at line %d: %s\n", yylineno, s);
@@ -126,11 +128,20 @@ void ParseCCVS(char const *name, char const *node1, char const *node2, char cons
     circuit->devices.push_back(d);
 }
 
-void ParseDiode(char const *name, char const *node1, char const *node2)
+void ParseDiode(char const *name, char const *node1, char const *node2, char const *model)
 {
     if (!checkName(name)) return;
     addNode(node1); addNode(node2);
-    D_Diode* d = new D_Diode(name, node1, node2);
+    D_Diode* d = new D_Diode(name, node1, node2, model);
+    circuit->devices.push_back(d);
+    circuit->hasNonlinearDevice = true;
+}
+
+void ParseMosfet(char const *name, char const *nd, char const *ng, char const *ns, char const *nb, char const *model)
+{
+    if (!checkName(name)) return;
+    addNode(nd); addNode(ng); addNode(ns); addNode(nb);
+    D_Mosfet* d = new D_Mosfet(name, nd, ng, ns, nb, model);
     circuit->devices.push_back(d);
     circuit->hasNonlinearDevice = true;
 }
@@ -225,7 +236,7 @@ void parseOption(char const *op)
 %token<str> LBRACKET
 %token<str> RBRACKET
 
-%token<str> EOL STRING COMMENTLINE
+%token<str> EOL STRING COMMENTLINE EQUAL
 %token<num> INTEGER 
 %token<value> REAL VALUE 
 
@@ -267,6 +278,7 @@ component:
     | cccs
     | ccvs
     | diode
+    | mosfet
     ;
 
 command:
@@ -297,8 +309,8 @@ inductor:
     ;
 
 diode: 
-    P_DIODE node node
-    { ParseDiode($1, $2, $3); }
+    P_DIODE node node node
+    { ParseDiode($1, $2, $3, $4); }
     ;
 
 vsource:
@@ -397,6 +409,21 @@ ccvs:
     }
     ;
 
+mosfet: 
+    P_MOSFET node node node node node 
+    {
+        ParseMosfet($1, $2, $3, $4, $5, $6);
+    }
+    | mosfet node EQUAL value
+    {
+        D_Mosfet* d = dynamic_cast<D_Mosfet*>(circuit->devices.back());
+        if (strcmp($2, "W") == 0)
+            d->Width = $4;
+        else if (strcmp($2, "L") == 0)
+            d->Length = $4;
+    }
+    ;
+
 title:
     CMD_TITLE STRING
     {
@@ -421,12 +448,46 @@ end:
     ;
 
 print:
-    CMD_PRINT RK_DC { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: DC"); }
-    | CMD_PRINT RK_AC { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: AC"); }
-    | CMD_PRINT RK_TRAN { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); }
-    | CMD_PRINT RK_OP { console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: OP"); }
-    | print VAR_I { console->log(std::format("[SpParser] print current: {}\n", $2)); }
-    | print VAR_V { console->log(std::format("[SpParser] print voltage: {}\n", $2)); }
+    CMD_PRINT RK_DC { 
+        console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: DC"); 
+        Command_PRINT* c = new Command_PRINT();
+        c->enabled = true;
+        c->type = PRINT_DC;
+        circuit->command_PRINTs.push_back(c);
+    }
+    | CMD_PRINT RK_AC { 
+        console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: AC"); 
+        Command_PRINT* c = new Command_PRINT();
+        c->enabled = true;
+        c->type = PRINT_AC;
+        circuit->command_PRINTs.push_back(c);
+    }
+    | CMD_PRINT RK_TRAN { 
+        console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); 
+        Command_PRINT* c = new Command_PRINT();
+        c->enabled = true;
+        c->type = PRINT_TRAN;
+        circuit->command_PRINTs.push_back(c);
+    }
+    | CMD_PRINT RK_OP { 
+        console->log("[SpParser] [Command] .print detected!"); console->log("[SpParser] type: TRAN"); 
+        Command_PRINT* c = new Command_PRINT();
+        c->enabled = true;
+        c->type = PRINT_OP;
+        circuit->command_PRINTs.push_back(c);
+    }
+    | print VAR_I { 
+        console->log(std::format("[SpParser] print current: {}\n", $2)); 
+        std::string node = $2;
+
+        circuit->command_PRINTs.back()->nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "I"));
+    }
+    | print VAR_V { 
+        console->log(std::format("[SpParser] print voltage: {}\n", $2)); 
+        std::string node = $2;
+
+        circuit->command_PRINTs.back()->nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "V"));
+    }
     ;
 
 dc:
@@ -477,30 +538,36 @@ options:
 plot:
     CMD_PLOT RK_DC { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: DC"); 
-        circuit->command_PLOT.enabled = true;
-        circuit->command_PLOT.type = PLOT_DC;
+        Command_PLOT* c = new Command_PLOT();
+        c->enabled = true;
+        c->type = PLOT_DC;
+        circuit->command_PLOTs.push_back(c);
     }
     | CMD_PLOT RK_AC { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: AC"); 
-        circuit->command_PLOT.enabled = true;
-        circuit->command_PLOT.type = PLOT_AC;
+        Command_PLOT* c = new Command_PLOT();
+        c->enabled = true;
+        c->type = PLOT_AC;
+        circuit->command_PLOTs.push_back(c);
     }
     | CMD_PLOT RK_TRAN { 
         console->log("[SpParser] [Command] .plot detected!"); console->log("[SpParser] type: TRAN"); 
-        circuit->command_PLOT.enabled = true;
-        circuit->command_PLOT.type = PLOT_TRAN;
+        Command_PLOT* c = new Command_PLOT();
+        c->enabled = true;
+        c->type = PLOT_TRAN;
+        circuit->command_PLOTs.push_back(c);
     }
     | plot VAR_I { 
         console->log(std::format("[SpParser] plot current: {}\n", $2)); 
         std::string node = $2;
 
-        circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "I"));
+        circuit->command_PLOTs.back()->nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "I"));
     }
     | plot VAR_V { 
         console->log(std::format("[SpParser] plot voltage: {}\n", $2)); 
         std::string node = $2;
 
-        circuit->command_PLOT.nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "V"));
+        circuit->command_PLOTs.back()->nodes.push_back(CircuitNode(node.substr(2, node.length() - 3), "V"));
     }
     ;
 

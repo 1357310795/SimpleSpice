@@ -83,7 +83,11 @@ void ChartViewWindow::initChart(PlotContext& context)
         }
     }
     
-    // chart->axes(Qt::Vertical).first()->setRange(0, 20);  // 设置Y轴的范围
+    if (!context.useLogAxis && !context.useExtraAxis)
+    {
+        chart->axes(Qt::Vertical).first()->setRange(context.min, context.max);  // 设置Y轴的范围
+    } 
+    
     ui->chartView->setRenderHint(QPainter::Antialiasing);  // 设置抗锯齿
 }
 

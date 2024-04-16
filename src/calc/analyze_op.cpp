@@ -14,17 +14,17 @@
 #include "devices/dynamic_device.h"
 #include "devices/nonlinear_device.h"
 #include "devices/source_device.h"
-#include "calc/analyze_dc.h"
+#include "calc/analyze_op.h"
 #include "chart/plot_manager.h"
 #include "calc/iteration_context.hpp"
 #include "chart/print_manager.h"
 
-AnalyzeDC::AnalyzeDC(Circuit* circuit, std::vector<CircuitNode>& nodes, int nodeCount)
+AnalyzeOP::AnalyzeOP(Circuit* circuit, std::vector<CircuitNode>& nodes, int nodeCount)
     : circuit(circuit), nodes(nodes), nodeCount(nodeCount) {}
 
-void AnalyzeDC::BuildDCMNA(AnalyzeContext* context)
+void AnalyzeOP::BuildOPMNA(AnalyzeContext* context)
 {
-    // console->log(std::format("[SpParser] Start Build DC MNA"));
+    // console->log(std::format("[SpParser] Start Build OP MNA"));
     context->mat.resize(context->nodeCount, context->nodeCount);
     context->rhs.resize(context->nodeCount, Eigen::NoChange);
     context->mat.fill(0);
@@ -40,10 +40,10 @@ void AnalyzeDC::BuildDCMNA(AnalyzeContext* context)
     // console->log(oss.str()); oss = std::ostringstream();
 }
 
-Eigen::VectorXd& AnalyzeDC::SolveDCSingle(AnalyzeContext* context)
+Eigen::VectorXd& AnalyzeOP::SolveOPSingle(AnalyzeContext* context)
 {
     if (!circuit->hasNonlinearDevice)
-        return SolveDCOneTime(context);
+        return SolveOPOneTime(context);
     for (auto& device : circuit->devices) {
         NonlinearDevice* nd = dynamic_cast<NonlinearDevice*>(device);
         if (nd)
@@ -56,7 +56,7 @@ Eigen::VectorXd& AnalyzeDC::SolveDCSingle(AnalyzeContext* context)
     while (1)
     {
         cnt++;
-        auto& res = SolveDCOneTime(context);
+        auto& res = SolveOPOneTime(context);
         double eps = 0;
         for (auto& device : circuit->devices) {
             NonlinearDevice* nd = dynamic_cast<NonlinearDevice*>(device);
@@ -88,48 +88,15 @@ Eigen::VectorXd& AnalyzeDC::SolveDCSingle(AnalyzeContext* context)
     }
 }
 
-void AnalyzeDC::SolveDC()
+void AnalyzeOP::SolveOP()
 {
     AnalyzeContext* context = new AnalyzeContext(nodes, nodeCount);
     std::vector<AnalyzeEntry*> results;
     AnalyzeEntry* entry = NULL;
-    if (circuit->command_DC.sweepOptions.size() == 0)
-    {
-        auto& res = SolveDCSingle(context);
-        entry = new AnalyzeEntry();
-        entry->result = res;
-        results.push_back(entry);
-    }
-    else
-    {
-        SweepOption& opt = circuit->command_DC.sweepOptions[0];
-        SourceDevice* source = NULL;
-        for (auto& device : circuit->devices) {
-            if (device->Name == opt.deviceName)
-            {
-                source = dynamic_cast<SourceDevice*>(device);
-            }
-        }
-        if (!source)
-        {
-            console->log("[SpParser] can not find" + opt.deviceName);
-            return;
-        }
-        if (opt.start - opt.stop > 1e-5)
-        {
-            console->log("[SpParser] sweep range error!");
-            return;
-        }
-        for(double v = opt.start; v-opt.stop < 1e-5; v += opt.step)
-        {
-            source->DC_Value = v;
-            auto& res = SolveDCSingle(context);
-            entry = new AnalyzeEntry();
-            entry->result = res;
-            entry->sweepEntries.push_back(SweepOptionEntry(opt.deviceName, v));
-            results.push_back(entry);
-        }
-    }
+    auto& res = SolveOPSingle(context);
+    entry = new AnalyzeEntry();
+    entry->result = res;
+    results.push_back(entry);
 
     console->log("[SpParser] Result:");
     for(auto& entry: results)
@@ -149,24 +116,20 @@ void AnalyzeDC::SolveDC()
         PrintManager::Print(context->nodeCount - 1, context->nodes, results);
     }
 
-    if (circuit->command_PLOTs.size() > 0)
-    {
-        PlotManager::Plot(context->nodeCount - 1, context->nodes, results);
-    }
     delete context;
 }
 
-Eigen::VectorXd& AnalyzeDC::SolveDCOneTime(AnalyzeContext* context)
+Eigen::VectorXd& AnalyzeOP::SolveOPOneTime(AnalyzeContext* context)
 {
     context->nodes = nodes;
     context->nodeCount = nodeCount;
-    BuildDCMNA(context);
+    BuildOPMNA(context);
     context->ground = context->nodes[0];
     Eigen::MatrixXd mat_ex = context->mat.block(1, 1, context->nodeCount - 1, context->nodeCount - 1);
     Eigen::VectorXd rhs_ex = context->rhs.tail(context->nodeCount - 1);
     context->nodes.erase(context->nodes.begin());
 
-    console->log("[SpParser] Start Solve DC");
+    console->log("[SpParser] Start Solve OP");
     console->log("[SpParser] MNA Matrix (excluding ground)");
     oss<<mat_ex<<std::endl;
     console->log(oss.str()); oss = std::ostringstream();

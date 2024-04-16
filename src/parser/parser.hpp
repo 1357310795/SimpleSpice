@@ -45,7 +45,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 151 "sp.y"
+#line 162 "sp.y"
 
     #include <cstdio>
     #include <cstdlib>
@@ -114,9 +114,10 @@ extern int yydebug;
     EOL = 307,                     /* EOL  */
     STRING = 308,                  /* STRING  */
     COMMENTLINE = 309,             /* COMMENTLINE  */
-    INTEGER = 310,                 /* INTEGER  */
-    REAL = 311,                    /* REAL  */
-    VALUE = 312                    /* VALUE  */
+    EQUAL = 310,                   /* EQUAL  */
+    INTEGER = 311,                 /* INTEGER  */
+    REAL = 312,                    /* REAL  */
+    VALUE = 313                    /* VALUE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -125,13 +126,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 158 "sp.y"
+#line 169 "sp.y"
 
     int    num;
     double value;
     char*  str;
 
-#line 135 "parser.hpp"
+#line 136 "parser.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

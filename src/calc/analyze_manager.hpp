@@ -19,6 +19,7 @@
 #include "calc/analyze_ac.h"
 #include "calc/analyze_dc.h"
 #include "calc/analyze_tran.h"
+#include "calc/analyze_op.h"
 
 class AnalyzeManager
 {
@@ -32,6 +33,7 @@ private:
     AnalyzeAC* analyze_ac;
     AnalyzeDC* analyze_dc;
     AnalyzeTRAN* analyze_tran;
+    AnalyzeOP* analyze_op;
 
 public:
     AnalyzeManager(Circuit* circuit): circuit(circuit) {};
@@ -73,6 +75,12 @@ public:
         for (const auto& node : nodes) {
             oss<<node.nodeName<<'\t';
             console->log(oss.str()); oss = std::ostringstream();
+        }
+
+        if (circuit->command_OP.enabled)
+        {
+            analyze_op = new AnalyzeOP(circuit, nodes, nodeCount);
+            analyze_op->SolveOP();
         }
 
         if (circuit->command_DC.enabled || circuit->command_OP.enabled)

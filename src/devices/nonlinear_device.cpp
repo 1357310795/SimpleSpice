@@ -6,6 +6,7 @@
 #include "console/myconsole.h"
 #include "circuit/circuit_node.h"
 #include "calc/analyze_context.h"
+#include "calc/iteration_context.hpp"
 #include "devices/nonlinear_device.h"
 
 NonlinearDevice::NonlinearDevice() {};
@@ -14,15 +15,15 @@ void NonlinearDevice::appendStampTRAN(AnalyzeContext* context) {
     throw std::runtime_error("Method Not Implemented");
 } 
 
-double NonlinearDevice::getLastVoltage(AnalyzeContext* context) {
+BaseIterationContext* NonlinearDevice::getLastContext(AnalyzeContext* context) {
     throw std::runtime_error("Method Not Implemented");
 } 
 
-double NonlinearDevice::getLastCurrent(AnalyzeContext* context) {
+BaseIterationContext* NonlinearDevice::getDefaultIterationContext() {
     throw std::runtime_error("Method Not Implemented");
 } 
 
-bool NonlinearDevice::checkConvergence(AnalyzeContext* context) {
+double NonlinearDevice::checkConvergence(AnalyzeContext* context) {
     throw std::runtime_error("Method Not Implemented");
 } 
 

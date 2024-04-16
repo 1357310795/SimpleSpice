@@ -7,6 +7,7 @@
 #include "circuit/circuit_node.h"
 #include "calc/analyze_context.h"
 #include "devices/base_device.h"
+#include "calc/iteration_context.hpp"
 
 class NonlinearDevice: virtual public BaseDevice {
 public:
@@ -14,9 +15,9 @@ public:
 
     virtual void appendStampTRAN(AnalyzeContext* context);
 
-    virtual double getLastVoltage(AnalyzeContext* context);
+    virtual BaseIterationContext* getLastContext(AnalyzeContext* context);
 
-    virtual double getLastCurrent(AnalyzeContext* context);
+    virtual BaseIterationContext* getDefaultIterationContext();
 
-    virtual bool checkConvergence(AnalyzeContext* context);
+    virtual double checkConvergence(AnalyzeContext* context);
 };

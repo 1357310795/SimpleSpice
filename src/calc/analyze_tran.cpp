@@ -1,5 +1,6 @@
 #include <vector>
 #include <string>
+#include <format>
 #include <iostream>
 #include <sstream>
 #include <Eigen/Dense>
@@ -15,6 +16,8 @@
 #include "devices/source_device.h"
 #include "calc/analyze_tran.h"
 #include "chart/plot_manager.h"
+#include "calc/iteration_context.hpp"
+#include "chart/print_manager.h"
 
 AnalyzeTRAN::AnalyzeTRAN(Circuit* circuit, std::vector<CircuitNode>& nodes, int nodeCount)
     : circuit(circuit), nodes(nodes), nodeCount(nodeCount) {}
@@ -63,10 +66,8 @@ Eigen::VectorXd& AnalyzeTRAN::SolveTRANSingle(AnalyzeContext* context)
         NonlinearDevice* nd = dynamic_cast<NonlinearDevice*>(device);
         if (nd)
         {
-            context->IterCurrents[nd->Name] = new std::vector<double>();
-            context->IterCurrents[nd->Name]->push_back(0);
-            context->IterVoltages[nd->Name] = new std::vector<double>();
-            context->IterVoltages[nd->Name]->push_back(0);
+            context->IterContexts[nd->Name] = new std::vector<BaseIterationContext*>();
+            context->IterContexts[nd->Name]->push_back(nd->getDefaultIterationContext());
         }
     }
     int cnt = 0;
@@ -79,15 +80,12 @@ Eigen::VectorXd& AnalyzeTRAN::SolveTRANSingle(AnalyzeContext* context)
             NonlinearDevice* nd = dynamic_cast<NonlinearDevice*>(device);
             if (nd)
             {
-                double value = nd->getLastCurrent(context);
-                console->log(std::format("[SpParser] IterCurrent: {}", value));
-                context->IterCurrents[nd->Name]->push_back(value);
-                value = nd->getLastVoltage(context);
-                console->log(std::format("[SpParser] IterVoltage: {}", value));
-                context->IterVoltages[nd->Name]->push_back(value);
+                auto lastContext = nd->getLastContext(context);
+                context->IterContexts[nd->Name]->push_back(lastContext);
+                //console->log(std::format("[SpParser] IterCurrent: {}", value));
+                //console->log(std::format("[SpParser] IterVoltage: {}", value));
 
-                auto it = context->IterVoltages[nd->Name]->end();
-                eps = std::max(eps, (std::abs(*(it-1)-*(it-2))));
+                eps = std::max(eps, nd->checkConvergence(context));
             }
         }
         console->log(std::format("[SpParser] Newton iteration counter: {}", cnt));
@@ -96,7 +94,12 @@ Eigen::VectorXd& AnalyzeTRAN::SolveTRANSingle(AnalyzeContext* context)
             oss<<context->nodes[i].prefix<<'('<<context->nodes[i].nodeName<<')'<<'\t'<<'='<<'\t'<<res(i);
             console->log(oss.str()); oss = std::ostringstream();
         }
-        if (eps < 1e-4)
+        if (cnt > 100)
+        {
+            console->log(std::format("[SpParser] Newton iteration failed to converge"));
+            throw std::runtime_error("convergence error");
+        }
+        if (eps < 1e-6)
         {
             return res;
         }
@@ -113,6 +116,7 @@ Eigen::VectorXd& AnalyzeTRAN::SolveTRANOneTime(AnalyzeContext* context)
     Eigen::VectorXd rhs_ex = context->rhs.tail(context->nodeCount - 1);
     context->nodes.erase(context->nodes.begin());
 
+#ifdef MY_DEBUG
     console->log("[SpParser] Start Solve TRAN");
     console->log("[SpParser] MNA Matrix (excluding ground)");
     oss<<mat_ex<<std::endl;
@@ -121,7 +125,7 @@ Eigen::VectorXd& AnalyzeTRAN::SolveTRANOneTime(AnalyzeContext* context)
     console->log("[SpParser] RHS Vector");
     oss<<rhs_ex<<std::endl;
     console->log(oss.str()); oss = std::ostringstream();
-
+#endif
     Eigen::VectorXd* x = new Eigen::VectorXd();
     *x = mat_ex.fullPivLu().solve(rhs_ex);
     context->res = *x;
@@ -159,8 +163,6 @@ void AnalyzeTRAN::SolveTRAN()
     }
     while (context->ts < circuit->command_TRAN.tstop)
     {
-        context->ts += context->interval;
-
         auto& res = SolveTRANSingle(context);
         entry = new AnalyzeEntry();
         entry->time = context->ts;
@@ -190,22 +192,27 @@ void AnalyzeTRAN::SolveTRAN()
         // if (min_step != INT_MAX)
         //     context->interval = min_step;
         // console->log(std::format("[SpParser] step: {}",context->interval));
+        context->ts += context->interval;
     }
 
-    // console->log("[SpParser] Result:");
-    // for(auto& entry: results)
-    // {
-    //     console->log(std::format("For time {}:", entry->time));
-    //     for(int i = 0; i < context->nodeCount - 1; i++)
-    //     {
-    //         oss<<context->nodes[i].prefix<<'('<<context->nodes[i].nodeName<<')'<<'\t'<<'='<<'\t'<<entry->result(i);
-    //         console->log(oss.str()); oss = std::ostringstream();
-    //     }
-    // }
-
-    if (circuit->command_PLOT.enabled)
+    console->log("[SpParser] Result:");
+    for(auto& entry: results)
     {
-        PlotManager::PlotTRAN(context->nodeCount - 1, context->nodes, results);
+        console->log(std::format("For time {}:", entry->time));
+        for(int i = 0; i < context->nodeCount - 1; i++)
+        {
+            oss<<context->nodes[i].prefix<<'('<<context->nodes[i].nodeName<<')'<<'\t'<<'='<<'\t'<<entry->result(i);
+            console->log(oss.str()); oss = std::ostringstream();
+        }
+    }
+    if (circuit->command_PRINTs.size() > 0)
+    {
+        PrintManager::Print(context->nodeCount - 1, context->nodes, results);
+    }
+    
+    if (circuit->command_PLOTs.size() > 0)
+    {
+        PlotManager::Plot(context->nodeCount - 1, context->nodes, results);
     }
     delete context;
 }

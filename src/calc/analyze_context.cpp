@@ -17,11 +17,10 @@ AnalyzeContext::AnalyzeContext(std::vector<CircuitNode> &nodes, int& nodeCount) 
 }
 
 AnalyzeContext::~AnalyzeContext() {
-    for (auto& pair : this->IterCurrents) {
-        delete pair.second;
-    }
-    for (auto& pair : this->IterVoltages) {
-        delete pair.second;
+    for (auto& pair : this->IterContexts) {
+        for (auto& item : *(pair.second)) {
+            delete item;
+        }
     }
     for (auto& pair : this->lastCurrents) {
         delete pair.second;

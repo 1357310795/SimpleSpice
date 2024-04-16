@@ -215,7 +215,7 @@ extern char *yytext;
 #define INITIAL 0
 #define state_options 1
 #define state_sourcetype 2
-#define state_title 3
+#define state_onlystring 3
 
 #endif
 
@@ -469,7 +469,7 @@ extern int yylex (void);
 #undef yyTABLES_NAME
 #endif
 
-#line 146 "sp.l"
+#line 148 "sp.l"
 
 
 #line 476 "scanner.hpp"

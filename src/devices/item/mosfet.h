@@ -11,18 +11,41 @@
 #include "devices/dynamic_device.h"
 #include "devices/nonlinear_device.h"
 #include "calc/analyze_context.h"
-#include "calc/iteration_context.hpp"
 
-class D_Diode : virtual public BaseDevice, public NonlinearDevice {
+enum MosfetType
+{
+    NMOS,
+    PMOS
+};
+
+class D_Mosfet : virtual public BaseDevice, public NonlinearDevice {
+private:
+    const double vth_n = 0.47965;
+    const double mucox_n = 0.03634841053;
+
+    const double vth_p = -0.43121;
+    const double mucox_p = 0.03453099;
 
 public:
-    std::string N1;
-    std::string N2;
+    std::string ND;
+    std::string NG;
+    std::string NS;
+    std::string NB;
     std::string Model;
+    MosfetType Type;
+    double Width;
+    double Length;
 
-    D_Diode(std::string name, std::string n1, std::string n2, std::string model);
+    D_Mosfet(
+        std::string name, 
+        std::string nd, 
+        std::string ng, 
+        std::string ns, 
+        std::string nb, 
+        std::string model
+    );
 
-    ~D_Diode() {}
+    ~D_Mosfet() {}
 
     std::string getDeviceType() override;
 
@@ -32,8 +55,7 @@ public:
         MatrixType &mat, 
         VectorType &rhs,
         std::vector<CircuitNode> &nodes,
-        double lastVoltage,
-        double lastCurrent
+        MosfetIterationContext &iterContext
     );
 
     void appendStampDC(AnalyzeContext* context)override;
@@ -42,13 +64,21 @@ public:
 
     void appendStampTRAN(AnalyzeContext* context)override;
 
-    double getLastVoltage(AnalyzeContext* context);
-
     BaseIterationContext* getLastContext(AnalyzeContext* context) override;
 
     BaseIterationContext* getDefaultIterationContext() override;
 
     double checkConvergence(AnalyzeContext* context) override;
+
+    double getVth();
+
+    double getmuCox();
+    
+    double getK();
+
+    double getCurrent(double vgs, double vds);
+
+    bool checkOpen(double vgs);
 
     void checkNode(
         std::ostringstream &oss,
@@ -58,4 +88,6 @@ public:
     void print(MyConsole* console) override;
 
     std::vector<std::string>& getInfoList() override;
+private:
+    int FindNodeIndex(std::vector<CircuitNode> &nodes, std::string nodeName);
 };

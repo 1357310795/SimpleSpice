@@ -6,6 +6,7 @@
 #include <Eigen/Dense>
 #include "circuit/circuit_node.h"
 #include "cmds/ac_dc.hpp"
+#include "calc/iteration_context.hpp"
 
 class AnalyzeContext {
 public:
@@ -21,8 +22,7 @@ public:
     std::unordered_map<std::string, std::vector<double>*> lastVoltages;
     std::unordered_map<std::string, std::vector<double>*> lastCurrents;
 
-    std::unordered_map<std::string, std::vector<double>*> IterVoltages;
-    std::unordered_map<std::string, std::vector<double>*> IterCurrents;
+    std::unordered_map<std::string, std::vector<BaseIterationContext*>*> IterContexts;
 
     CircuitNode ground;
     int nodeCount;

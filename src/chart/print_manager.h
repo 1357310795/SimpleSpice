@@ -19,30 +19,37 @@
 #include "devices/nonlinear_device.h"
 #include "devices/source_device.h"
 
-class PlotManager {
+class PrintManager {
 public:
-    static void PlotTRAN(
+    static void PrintTRAN(
         int nodeCount,
         std::vector<CircuitNode>& nodes,
         std::vector<AnalyzeEntry*>& results,
-        Command_PLOT& command_PLOT
+        Command_PRINT& command_PRINT
     );
 
-    static void PlotDC(
+    static void PrintDC(
         int nodeCount,
         std::vector<CircuitNode>& nodes,
         std::vector<AnalyzeEntry*>& results,
-        Command_PLOT& command_PLOT
+        Command_PRINT& command_PRINT
     );
 
-    static void PlotAC(
+    static void PrintAC(
         int nodeCount,
         std::vector<CircuitNode>& nodes,
         std::vector<AnalyzeEntry*>& results,
-        Command_PLOT& command_PLOT
+        Command_PRINT& command_PRINT
     );
 
-    static void Plot(
+    static void PrintOP(
+        int nodeCount,
+        std::vector<CircuitNode>& nodes,
+        std::vector<AnalyzeEntry*>& results,
+        Command_PRINT& command_PRINT
+    );
+
+    static void Print(
         int nodeCount,
         std::vector<CircuitNode>& nodes,
         std::vector<AnalyzeEntry*>& results

@@ -11,7 +11,7 @@
 double parseValue(const char *str);
 %}
 
-%s state_options state_sourcetype state_title
+%s state_options state_sourcetype state_onlystring
 
 ALPHA       [_A-Za-z]
 DIGIT       [0-9]
@@ -41,6 +41,7 @@ VALUE       ({REAL}|[\-]?{INTEGER}){S_UNIT}
 COMMENTLINE \*.*\n
 LBRACKET    \(
 RBRACKET    \)
+EQUAL       =
 
 RK_AC          [Aa][Cc]
 RK_ACI         [Aa][Cc][Ii]
@@ -87,7 +88,7 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 <state_options>{STRING}  { yylval.str = strdup(yytext); return OPTIONS_ITEM;   }
 <state_sourcetype>{LBRACKET}     { return LBRACKET; }
 <state_sourcetype>{RBRACKET}     { return RBRACKET; }
-<state_title>{STRING}  { yylval.str = strdup(yytext); return STRING;   }
+<state_onlystring>{STRING}  { yylval.str = strdup(yytext); return STRING;   }
 
 {P_RESISTOR}    { yylval.str = strdup(yytext);  return P_RESISTOR;   }
 {P_CAPACITOR}   { yylval.str = strdup(yytext);  return P_CAPACITOR;  }
@@ -135,13 +136,14 @@ VAR_I           [Ii]\({ALPHANUM}+\)
 {CMD_OPTIONS}       { BEGIN(state_options); return CMD_OPTIONS; }
 {CMD_PLOT}          { return CMD_PLOT; }
 {CMD_TRAN}          { return CMD_TRAN; }
-{CMD_TITLE}         { BEGIN(state_title); return CMD_TITLE; }
+{CMD_TITLE}         { BEGIN(state_onlystring); return CMD_TITLE; }
 
 {VAR_V}             { yylval.str = strdup(yytext); return VAR_V; }
 {VAR_I}             { yylval.str = strdup(yytext); return VAR_I; }
 
 {STRING}    { yylval.str = strdup(yytext);  return STRING; }
 {BLANK}     { }
+{EQUAL}     { return EQUAL; }
 .           { return *yytext; }
 %%
 

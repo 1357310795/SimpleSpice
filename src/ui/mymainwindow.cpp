@@ -188,7 +188,7 @@ void MyMainWindow::on_actionParse_triggered()
     // read title and move the pointer to second line
     char title[128];
     fgets(title, 128, file);
-    yylineno++;
+    yylineno = 1;
     console->log(std::format("[SpParser] Title: {}", title));
     circuit->title = title;
 
@@ -223,21 +223,21 @@ void MyMainWindow::on_actionParse_triggered()
             QTreeWidgetItem* item = new QTreeWidgetItem(QStringList()<<info.c_str());
             topitem->addChild(item);
         }
-        //item->addChild()
-        //device->appendStamp(nodeCount, mat, rhs, nodes);
     }
 
-    // if (circuit->command_PLOT.enabled)
-    // {
-    //     for (auto& plotnode : circuit->command_PLOT.nodes) {
-    //         console->log(std::format("[SpParser] Plot: {}({})", plotnode.prefix, plotnode.nodeName));
-    //     }
-    // }
-
-    if (analyze)
-        delete analyze;
-    analyze = new AnalyzeManager(circuit);
-    analyze->StartAnalyze();
+    try
+    {
+        if (analyze)
+            delete analyze;
+        analyze = new AnalyzeManager(circuit);
+        analyze->StartAnalyze();
+    }
+    catch (std::runtime_error ex)
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Analyze failed. Check the console for error message."),
+                             QMessageBox::Ok);
+    }
+    
 }
 
 void MyMainWindow::on_actionDebug_triggered()
