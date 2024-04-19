@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Chart</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="src/ui/mainwindow.qrc">
+    <normaloff>:/images/spice-1.svg</normaloff>:/images/spice-1.svg</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QChartView" name="chartView"/>
@@ -26,6 +30,8 @@
    <header>qchartview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="src/ui/mainwindow.qrc"/>
+ </resources>
  <connections/>
 </ui>

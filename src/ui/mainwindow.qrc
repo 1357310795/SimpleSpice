@@ -16,5 +16,7 @@
         <file>../images/save.svg</file>
         <file>../images/saveas.svg</file>
         <file>../images/chip.svg</file>
+        <file>../images/spice-1.svg</file>
+        <file>../images/about.svg</file>
     </qresource>
 </RCC>

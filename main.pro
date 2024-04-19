@@ -64,6 +64,7 @@ HEADERS += \
     src/devices/dynamic_device.h \
     src/devices/source_device.h \
     src/global/global.h \
+    src/ui/aboutwindow.h \
     src/ui/mymainwindow.h \
     src/parser/location.hh \
     src/parser/parser.hpp \
@@ -74,7 +75,8 @@ HEADERS += \
     src/parser/stack.hh \
     src/qss/QmlStyleUrlInterceptor.h \
     src/qss/QtAdvancedStylesheet.h \
-    src/qss/acss_globals.h
+    src/qss/acss_globals.h \
+    src/utils/SpiceHighlighter.hpp
     src/utils/SpiceHighlighter.hpp
 
 SOURCES += src/main.cpp \
@@ -105,6 +107,7 @@ SOURCES += src/main.cpp \
            src/devices/dynamic_device.cpp \
            src/devices/source_device.cpp \
            src/global/global.cpp \
+           src/ui/aboutwindow.cpp \
            src/ui/mymainwindow.cpp \
            src/parser/parser.cpp \
            src/parser/scanner.cpp \
@@ -116,7 +119,8 @@ RESOURCES += src/ui/mainwindow.qrc \
 
 FORMS += \
     mainwindow2.ui \
-    mychart.ui
+    mychart.ui \
+    src/ui/aboutwindow.ui
 
 INCLUDEPATH += /usr/include/eigen3
 

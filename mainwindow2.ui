@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>SimpleSpice</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="src/ui/mainwindow.qrc">
+    <normaloff>:/images/spice-1.svg</normaloff>:/images/spice-1.svg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -56,8 +60,15 @@
     <addaction name="separator"/>
     <addaction name="actionFind_Replace"/>
    </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -77,6 +88,7 @@
    <addaction name="separator"/>
    <addaction name="actionParse"/>
    <addaction name="actionDebug"/>
+   <addaction name="actionAbout"/>
   </widget>
   <widget class="QDockWidget" name="dockWidget">
    <property name="minimumSize">
@@ -215,6 +227,15 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="src/ui/mainwindow.qrc">
+     <normaloff>:/images/about.svg</normaloff>:/images/about.svg</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

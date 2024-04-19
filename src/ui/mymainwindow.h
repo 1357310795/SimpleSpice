@@ -43,6 +43,7 @@ private slots:
     void on_actionSave_triggered();
     void on_actionParse_triggered();
     void on_actionDebug_triggered();
+    void on_actionAbout_triggered();
 };
 #endif // CMAINWINDOW_H
 

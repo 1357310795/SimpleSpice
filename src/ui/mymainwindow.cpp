@@ -22,6 +22,7 @@
 #include "global/global.h"
 #include "chart/mychart.h"
 #include "qss/QtAdvancedStylesheet.h"
+#include "ui/aboutwindow.h"
 
 #define _STR(x) #x
 #define STRINGIFY(x)  _STR(x)
@@ -51,7 +52,7 @@ MyMainWindow::MyMainWindow(QWidget *parent)
     AdvancedStyleSheet->setCurrentStyle("qt_material");
     AdvancedStyleSheet->setDefaultTheme();
     AdvancedStyleSheet->updateStylesheet();
-    setWindowIcon(AdvancedStyleSheet->styleIcon());
+    //setWindowIcon(AdvancedStyleSheet->styleIcon());
     qApp->setStyleSheet(AdvancedStyleSheet->styleSheet());
     connect(AdvancedStyleSheet, SIGNAL(stylesheetChanged()), this,
         SLOT(onStyleManagerStylesheetChanged()));
@@ -244,5 +245,12 @@ void MyMainWindow::on_actionDebug_triggered()
 {
     ChartViewWindow* chart = new ChartViewWindow();
     chart->show();
+}
+
+
+void MyMainWindow::on_actionAbout_triggered()
+{
+    AboutWindow* about = new AboutWindow();
+    about->show();
 }
 
