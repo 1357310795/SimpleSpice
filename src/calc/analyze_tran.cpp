@@ -180,18 +180,18 @@ void AnalyzeTRAN::SolveTRAN()
             }
         }
 
-        // double min_step = INT_MAX;
-        // for (auto& device : circuit->devices) {
-        //     DynamicDevice* dd = dynamic_cast<DynamicDevice*>(device);
-        //     if (dd)
-        //     {
-        //         double value = dd->filterLTE(context, context->interval);
-        //         min_step = std::min(min_step, value);
-        //     }
-        // }
-        // if (min_step != INT_MAX)
-        //     context->interval = min_step;
-        // console->log(std::format("[SpParser] step: {}",context->interval));
+        double min_step = INT_MAX;
+        for (auto& device : circuit->devices) {
+            DynamicDevice* dd = dynamic_cast<DynamicDevice*>(device);
+            if (dd)
+            {
+                double value = dd->filterLTE(context, context->interval);
+                min_step = std::min(min_step, value);
+            }
+        }
+        if (min_step != INT_MAX)
+            context->interval = min_step;
+        console->log(std::format("[SpParser] step: {}",context->interval));
         context->ts += context->interval;
     }
 
