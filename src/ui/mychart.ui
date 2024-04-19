@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ChartViewWindow</class>
+ <widget class="QWidget" name="ChartViewWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Chart</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="src/ui/mainwindow.qrc">
+    <normaloff>:/images/spice-1.svg</normaloff>:/images/spice-1.svg</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QChartView" name="chartView"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header>qchartview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="src/ui/mainwindow.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -118,8 +118,8 @@ RESOURCES += src/ui/mainwindow.qrc \
     src/ui/mainwindow.qrc
 
 FORMS += \
-    mainwindow2.ui \
-    mychart.ui \
+    src/ui/mainwindow2.ui \
+    src/ui/mychart.ui \
     src/ui/aboutwindow.ui
 
 INCLUDEPATH += /usr/include/eigen3
